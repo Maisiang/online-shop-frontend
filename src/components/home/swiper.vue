@@ -3,7 +3,7 @@
         <swiper :modules="modules"
                 :slides-per-view="1"      
                 :loop=true
-                :autoplay="{ delay: 2000}"
+                :autoplay="{ delay: 1000}"
                 :speed="2000"
                 :pagination="{ clickable: true }">
             <swiper-slide v-for="(item,index) in swiperList" :key="index">
@@ -45,8 +45,5 @@ export default {
 .swiper {
     width: 100%;
     height: 100%;
-}
-.Pagination{
-    margin-bottom: -53px;
 }
 </style>
