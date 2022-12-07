@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-
+// 資料庫
+let {client, getCollection, searchData, insertData, updateData} = require('../db/nosql.js')
 // 查詢商品資料API
 router.get('/api/get' ,async (request,response)=>{
   try{
