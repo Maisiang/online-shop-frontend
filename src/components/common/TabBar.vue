@@ -48,8 +48,10 @@ export default{
             if(this.$route.path === path) return;
             // 將目前路徑替換成使用者點擊的路徑
             // 如果還沒登入會跳轉到登入頁面 (購物車、會員)
-            if((path==='/cart'||path==='/users')&&this.$route.path!='/login'){
-                if(!sessionStorage.getItem('user-info'))
+            if((path==='/cart'||path==='/users')){
+                if(this.$route.path==='/login')
+                    alert('請先登入會員！');
+                else if(!sessionStorage.getItem('user-info'))
                     this.$router.replace('/login');
                 else
                     this.$router.replace(path);

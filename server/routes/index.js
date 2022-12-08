@@ -81,6 +81,67 @@ router.post('/api/login',async (request,response)=>{
   }
 });
 
+// 用戶註冊API
+router.post('/api/register', async (request,response)=>{
+  try{
+    // 連線到資料庫的users集合
+    await getCollection('dove','users');
+    // 搜尋帳號是否存在
+    searchObj = {username: request.body.username};
+    let resultObj = await searchData(searchObj);
+    // 搜尋Email是否存在
+    searchObj = {email: request.body.email};
+    resultObj_email = await searchData(searchObj);
+    // 當用戶存在
+    if(resultObj.length!=0){
+      response.send({
+        isRegister:false,
+        message:'帳號已經存在！'
+      });
+    }
+    // 當Email存在
+    else if(resultObj_email.length!=0){
+      response.send({
+        isRegister:false,
+        message:'Email已經存在！'
+      });
+    }
+    // 都不存在，則在資料庫新增帳號
+    else{
+      // 新增 dove - users 資料
+      insertObj = {
+        username: request.body.username,
+        password: request.body.password,
+        email: request.body.email,
+        avatar: 'pigeon1.jpg'
+      };
+      await insertData(insertObj);
+      // 新增 dove - cart 資料
+      await getCollection('dove','cart');
+      insertObj = {
+        username: request.body.username,
+        product_id:[]
+      };
+      await insertData(insertObj);
+
+      // 回傳給客戶端註冊完畢資訊
+      console.log('帳號註冊成功！');
+      response.send({
+        isRegister:true,
+        message:'帳號註冊成功！'
+      });
+      
+    }
+  }
+  catch(error){
+    console.log("錯誤："+ error.message);
+  }
+  finally{
+    // 結束資料庫連線
+    if(client != null) client.close();
+    response.end();
+  }
+});
 
 
 /* GET home page. */
