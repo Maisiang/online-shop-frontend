@@ -1,13 +1,171 @@
 <template>
-  <div class="login">login</div>
+  <div class="login">
+      <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"/>
+      <Header></Header>
+
+      <div class="content row flex-wrap space-around-center">
+          <form class="sign-in col center-center"
+          method="POST" action="/api/login"
+          @submit.prevent="login">
+              <h1 class="h1">登入會員</h1>
+              <input maxlength="12" placeholder="Username 用戶名" type="text" 
+              ref="loginUsername">
+              <div class="login-password row center-center">
+                  <input maxlength="12" placeholder="Password 密碼" type="password"
+                  ref="loginPassword">
+                  <i v-if="loginEye.status" @click="changeEye(loginEye , $refs.loginPassword)" class="fas fa-eye pws-eye"></i>
+                  <i v-if="!loginEye.status" @click="changeEye(loginEye, $refs.loginPassword)" class="fas fa-eye-slash pws-eye"></i>
+              </div>
+
+
+              <input type="submit" value="登入">
+          </form>
+
+          <form class="sign-up col center-center" @submit.prevent="register"
+          enctype="multipart/form-data" id="registerForm">
+              <h1 class="h1">註冊會員</h1>
+              <input maxlength="12" placeholder="Username 用戶名" type="text" 
+              ref="registerUsername" name="username">
+              <input type="email" placeholder="Email 電子郵件" name="email" ref="registerEmail">
+              <div class="password-field row center-center">
+                  <input maxlength="12" placeholder="Password 密碼" type="password"
+                  ref="registerPassword" name="password">
+                  <i v-if="registerEye.status" @click="changeEye(registerEye , $refs.registerPassword)" class="fas fa-eye pws-eye"></i>
+                  <i v-if="!registerEye.status" @click="changeEye(registerEye, $refs.registerPassword)" class="fas fa-eye-slash pws-eye"></i>
+              </div>
+
+              <input type="submit" value="註冊">
+          </form> 
+      </div>
+  </div>
 </template>
 
 <script>
-export default {
-  name: "LoginView",
+import axios from 'axios';
+import Header from '@/components/common/Header.vue';
+export default{
+  data(){
+      return{
+          loginEye:{status: true},
+          registerEye:{status:true}
+      }
+  },
+  methods:{
+      login(){
+          // 通過前端驗證格式
+          if(!this.checkUserFormat('帳號',this.$refs.loginUsername)){
+              console.log('驗證失敗');
+              return false;
+          }
+          if(!this.checkUserFormat('密碼',this.$refs.loginPassword)){
+              console.log('驗證失敗');
+              return false;
+          }
+          console.log('請求登入',this.$refs.loginUsername.value,this.$refs.loginPassword.value);
+          // 發送登入請求
+          axios.post('/api/login',{
+              username:this.$refs.loginUsername.value,
+              password:this.$refs.loginPassword.value
+          }).then((response)=>{
+              alert(response.data.message);
+              // 登入成功
+              if(response.data.isLogin){
+                  // 儲存到sessionStorage
+                  sessionStorage.setItem('user-info',JSON.stringify(response.data.userInfo))
+                  console.log('session儲存:',response.data.userInfo);
+                  // 切換路由到首頁
+                  this.$router.push('/')
+              }
+
+          })
+      },
+      register(){
+
+      },
+      checkUserFormat(verity , refs){
+          console.log('開始驗證'+verity);
+          let value = refs.value;
+          if(verity==='電子信箱'){
+              if(value.length===0){
+                  alert('請輸入電子信箱');
+                  refs.focus();
+                  return false;
+              }
+              else return true;
+          }
+          // 限制只能輸入英文及數字
+          for(let i=0 ; i<value.length ; i++){
+              if(!((value[i]>='a' && value[i]<='z')||
+                  (value[i]>='A' && value[i]<='Z')||
+                  (value[i]>='0' && value[i]<='9')))
+              {
+                  alert(verity+"：請輸入大小寫英文字母或數字!!");
+                  refs.focus();
+                  return false;
+              }
+          }
+          if(value.length<6 || value.length>12){
+              alert(verity+'：請輸入至少6 ~ 12個字元');
+              refs.focus();
+              return false;
+          }
+          return true;
+      },
+      changeEye(Obj , refs){
+          Obj.status = !Obj.status;
+          if(Obj.status===false)
+              refs.type='text';
+          else
+              refs.type='password';
+      }
+  },
+  components:{
+      Header,
+  }
 };
 </script>
 
 <style scoped>
+.content{
+  min-height: 70vh;
+  height: auto;
+}
+.content form{
+  color:rgb(50, 150, 255);
+  margin-top: 60px;
+  padding: 50px;
+  background-color: #f5f5f5;
+  box-shadow: 10px 10px 25px rgba(0,0,0,.5);
+}
+.content form input{
+  margin-top:20px;
+  background: none;
+  padding: 5px;
+}
+.content form input[type="submit"]{
+  width: 50%;
+  cursor: pointer;
+  border-radius: 12px;
+}
+.content form input[type="submit"]:hover{
+  transition: 1s;
+  width: 100%;
+  background-color: rgb(50, 150, 255);
+  border: 2px rgb(50, 150, 255) solid;
+  color:white;
+}
+.content form input[type="text"]:focus,
+.content form input[type="password"]:focus,
+.content form input[type="email"]:focus
+{
+  background-color: #ccc;
+}
+.password-field{
+  margin-right: 4px;
+}
+.pws-eye{
+  margin-top: 20px;
+  margin-left: -23px;
+}
 
 </style>
