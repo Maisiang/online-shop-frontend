@@ -1,6 +1,5 @@
 <template>
   <div class="cart col center-center">
-    <Header></Header>
     <ul class="cart-ul col center-center">
       <h1 class="h1">購物車清單</h1>
       <p v-if="isCartEmpty" class="h2">購物車沒有任何商品...</p>
@@ -51,8 +50,8 @@
 </template>
 
 <script>
+import { watch } from "vue"
 import axios from 'axios';
-import Header from '@/components/common/Header.vue'
 export default {
   name: "CartView",
   data(){
@@ -68,7 +67,6 @@ export default {
     // 取得用戶的購物車所有商品
     getCart(){
       axios.get('/api/getCart').then((response)=>{
-        console.log(response.data);
         this.productList = Object.assign({},response.data);
         if(response.data.length===0){
           this.isCartEmpty=true;
@@ -79,7 +77,7 @@ export default {
 
         // 購物車數量都為1個，並計算金額
         for(let i=0 ; i<response.data.length ; i++){
-          this.productNum.splice(i, 0, 1);
+          this.productNum[i]=1;
           this.total = this.total + this.productList[i].price;
         }
       })
@@ -95,29 +93,40 @@ export default {
     // 透過 +和-按鈕控制數量
     changeProductNum(index,opt){
       if(opt==='+')
-        this.productNum.splice(index, 1, ++this.productNum[index]);
+        this.productNum[index] = ++this.productNum[index];
       else if(opt==='-'){
         if(this.productNum[index]>1)
-          this.productNum.splice(index, 1, --this.productNum[index]);
+          this.productNum[index] = --this.productNum[index];
+      }
+      this.computeTotal();
+    },
+    // 計算總金額
+    computeTotal(){
+      this.total = 0;
+      for(let i=0 ; i<this.productNum.length ; i++){
+        this.total = this.total + (this.productList[i].price * this.productNum[i]);
       }
     },
     // 用來判斷input輸入的數量
     inputProductNum(value,index){
-      if(value==='' || value[0]===' '){
-        this.productNum.splice(index, 1, 1);
+      // 為NULL 或 空格
+      if(value.length===0 || value[0]===' '){
+        this.productNum[index] = 1;
+        this.computeTotal();
         return false;
       }
       for(let i=0 ; i<value.length ; i++){
-        if(i===0 && value[i]==='0'){
-          this.productNum.splice(index, 1, 1);
-          return false;
-        }
-        else if(!(value[i]<='9' && value[i]>=0)){
-          this.productNum.splice(index, 1, 1);
+        // 開頭為0 或 非數字
+        if((i===0 && value[i]==='0')||
+          (!(value[i]<='9' && value[i]>='0'))){
+          this.productNum[index] = 1;
+          this.computeTotal();
           return false;
         }
       }
+      // 輸入正確的格式
       this.productNum.splice(index,1,parseInt(value));
+      this.computeTotal();
     }
   },
   mounted(){
@@ -133,18 +142,6 @@ export default {
 
     }
   },
-  // 當數量變更進行總金額計算
-  watch:{
-    productNum: function(value,oldValue){
-      this.total=0;
-      for(let i=0 ; i<this.productNum.length ; i++){
-        this.total = this.total + (this.productList[i].price * this.productNum[i]);
-      }
-    }
-  },
-  components:{
-    Header,
-  }
 };
 </script>
 
