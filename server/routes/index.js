@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 // 資料庫
 let {client, getCollection, searchData, insertData, updateData} = require('../db/nosql.js')
+const { ObjectId } = require('mongodb');
 // 配置sessionn
 const session = require('express-session')
 router.use(session({
