@@ -10,6 +10,7 @@ router.use(session({
   saveUninitialized: true
 }))
 
+
 // 查詢商品資料API
 router.get('/api/get' ,async (request,response)=>{
   try{

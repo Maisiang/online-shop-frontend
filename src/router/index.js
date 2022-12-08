@@ -43,7 +43,7 @@ const routes = [
     //name: "search",
     children:[
       {
-        path: "/",
+        path: "",
         name: "search-home",
         component: () => import("@/views/search/Home.vue"),
       },

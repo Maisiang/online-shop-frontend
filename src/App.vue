@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <Header></Header>
+    <Header v-if="this.$route.path!=='/search'"></Header>
+    <SearchHeader v-if="this.$route.path==='/search'"></SearchHeader>
     <router-view class="m-tabbar m-header h-full"></router-view>
     <TabBar></TabBar>
   </div>
@@ -8,12 +9,14 @@
 
 <script>
 import Header from '@/components/common/Header.vue';
+import SearchHeader from '@/components/search/Header.vue';
 import TabBar from '@/components/common/TabBar.vue';
 
 export default {
   components:{
     TabBar,
-    Header
+    Header,
+    SearchHeader
   }
 }
 </script>
