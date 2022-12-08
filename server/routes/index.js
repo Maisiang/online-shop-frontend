@@ -9,7 +9,10 @@ router.use(session({
   resave: false,
   saveUninitialized: true
 }))
-
+// for parsing multipart/form-data
+let multer = require('multer');
+let upload = multer();
+router.use(upload.array());
 
 // 查詢商品資料API
 router.get('/api/get' ,async (request,response)=>{
