@@ -25,7 +25,7 @@
 <script>
 import axios from 'axios';
 export default{
-  name: "User",
+  name: "UsersView",
   //props: ['postTitle'],
   data(){
     return{

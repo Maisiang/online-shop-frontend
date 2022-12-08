@@ -1,6 +1,5 @@
 <template>
   <div class="products col">
-    <Header></Header>
     <div class="products-menu col center-center">
       <h1 class="h1 title">分類</h1>
       <ul class="products-menu-list row space-around-center noselect flex-wrap">
@@ -31,7 +30,6 @@
 
 <script>
 import axios from 'axios';
-import Header from '@/components/common/Header.vue';
 import AddToCartBtn from '@/components/common/AddToCartBtn.vue';
 export default {
   name: "ListView",
@@ -74,7 +72,6 @@ export default {
         },
     },
   components:{
-    Header,
     AddToCartBtn
   }
 };

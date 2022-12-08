@@ -1,7 +1,6 @@
 <template>
   <div class="login">
       <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"/>
-      <Header></Header>
 
       <div class="content row flex-wrap space-around-center">
           <form class="sign-in col center-center"
@@ -42,7 +41,6 @@
 
 <script>
 import axios from 'axios';
-import Header from '@/components/common/Header.vue';
 export default{
   data(){
       return{
@@ -141,9 +139,6 @@ export default{
               refs.type='password';
       }
   },
-  components:{
-      Header,
-  }
 };
 </script>
 
