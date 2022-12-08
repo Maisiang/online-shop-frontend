@@ -156,6 +156,101 @@ router.post('/api/logout', (request,response)=>{
   })
 });
 
+// 查詢用戶購物車API
+router.get('/api/getCart' ,async (request,response)=>{
+  try{
+    // 連線到資料庫的購物車集合
+    await getCollection('dove','cart');
+    // 搜尋購物車的商品id
+    let searchObj = {username:request.session.user.username};
+    let resultObj = await searchData(searchObj);
+    console.log("商品id查詢結果：\n",resultObj[0].product_id);
+    // 連線到資料庫的商品集合
+    await getCollection('dove','product');
+    // 透過id搜尋商品集合
+    searchObj = {
+      "_id" : {
+        "$in" : resultObj[0].product_id
+    }}
+    resultObj = await searchData(searchObj);
+    console.log("商品查詢結果：\n",resultObj);
+    response.json(resultObj);
+  }
+  catch(error){
+    console.log("錯誤："+ error.message);
+  }
+  finally{
+    // 結束資料庫連線
+    if(client != null) client.close();
+    response.end();
+  }
+});
+
+// 添加商品到用戶購物車API
+router.post('/api/addToCart', async(request,response)=>{
+  // 後端添加判斷：
+  // 1. 確認商品是否存在
+
+  try{
+    await getCollection('dove' , 'cart');
+    let searchObj = {username:request.session.user.username};
+    let insertObj = {$addToSet: {product_id: ObjectId(request.body.product_id)}};
+    resultObj = await updateData(searchObj,insertObj);
+    // 回傳新增商品到購物車的結果
+    if(resultObj.length!=0){
+      console.log('購物車新增成功！');
+      response.send({
+        message:'已將商品加到購物車！'
+      });
+    }
+  }
+  catch(error){
+    console.log("錯誤："+ error.message);
+    console.log('購物車新增失敗...');
+    response.send({
+      message:'商品加到購物車失敗...\n請先登入會員！'
+    });
+  }
+  finally{
+    // 結束資料庫連線
+    if(client != null) client.close();
+    response.end();
+  }
+});
+
+// 移除商品從用戶購物車API
+router.post('/api/removeFromCart', async(request,response)=>{
+  // 後端判斷：
+  /* 因透過session.username去移除商品，所以不判斷session */
+  try{
+    await getCollection('dove' , 'cart');
+    let searchObj = {username :request.session.user.username};
+    let insertObj = {$pull    :{product_id: ObjectId(request.body.product_id)}};
+    resultObj = await updateData(searchObj,insertObj);
+    // 回傳移除商品結果
+    if(resultObj.length!=0){
+      console.log('購物車刪除商品成功！');
+      response.send({
+        message:'已將商品從購物車移除！'
+      });
+    }
+    else{
+      console.log('購物車刪除商品失敗...');
+      response.send({
+        message:'購物車刪除商品失敗...'
+      });   
+    }
+  }
+  catch(error){
+    console.log("錯誤："+ error.message);
+  }
+  finally{
+    // 結束資料庫連線
+    if(client != null) client.close();
+    response.end();
+  }
+});
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
