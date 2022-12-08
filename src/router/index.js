@@ -23,7 +23,19 @@ const routes = [
   },
   {
     path: "/users",
-    name: "Users",
+    //name: "Users",
+    children:[
+      {
+        path:"",
+        name:"profile",
+        component: () => import("../views/users/Profile.vue"),
+      },
+      {
+        path:"transaction",
+        name:"transaction",
+        component: () => import("../views/users/Transaction.vue"),
+      },
+    ],
     component: () => import("../views/UsersView.vue"),
   },
   {

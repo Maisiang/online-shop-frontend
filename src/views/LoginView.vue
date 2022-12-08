@@ -80,7 +80,29 @@ export default{
           })
       },
       register(){
-
+          // 通過前端驗證格式
+          if(!this.checkUserFormat('帳號',this.$refs.registerUsername)){
+              console.log('驗證失敗');
+              return false;
+          }
+          if(!this.checkUserFormat('電子信箱',this.$refs.registerEmail)){
+              console.log('驗證失敗');
+              return false;
+          }
+          if(!this.checkUserFormat('密碼',this.$refs.registerPassword)){
+              console.log('驗證失敗');
+              return false;
+          }
+          let formData = new FormData(registerForm);
+          console.log('請求註冊',formData.get('username'),formData.get('email'),formData.get('password'));
+          // 發送註冊請求
+          axios.post('/api/register', formData, {
+              header:{'content-type': 'multipart/form-data'}
+          }).then((response)=>{
+              alert(response.data.message);
+              if(response.data.isRegister)
+                  this.$router.push('/')
+          })
       },
       checkUserFormat(verity , refs){
           console.log('開始驗證'+verity);
