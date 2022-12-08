@@ -143,6 +143,14 @@ router.post('/api/register', async (request,response)=>{
   }
 });
 
+// 用戶登出API
+router.post('/api/logout', (request,response)=>{
+  request.session.destroy();
+  response.send({
+    isLogout:true,
+    message:'登出成功！'
+  })
+});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
