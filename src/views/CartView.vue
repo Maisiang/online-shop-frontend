@@ -21,37 +21,15 @@
       </li>
     </ul>
 
-    <div class="order-summary col center-center">
-      <h1 class="h1">訂單摘要</h1>
-      <form class="receiver-info row flex-wrap">
-        <label>電子信箱</label>
-        <input type="text">
-        <div>
-          <label>姓名</label>
-          <input type="text">
-        </div>
-        <div>
-          <label>電話號碼</label>
-          <input type="text">
-        </div>
-        <label>收件地址</label>
-        <input type="text">
-        <label>備註</label>
-        <input type="text">
-      </form>
+    <OrderForm v-bind:total="total"></OrderForm>
 
-      <div class="total row space-between-center">
-        <p class="h2">購物車總計</p>
-        <p class="h2 c-red">${{total}}</p>
-      </div>
-      <button class="send-order-btn">送出訂單</button>
-    </div>
   </div>
 </template>
 
 <script>
-import { watch } from "vue"
+import OrderForm from "@/components/cart/OrderForm.vue";
 import axios from 'axios';
+
 export default {
   name: "CartView",
   data(){
@@ -67,19 +45,21 @@ export default {
     // 取得用戶的購物車所有商品
     getCart(){
       axios.get('/api/getCart').then((response)=>{
+        // 將購物車內容複製到productList物件
         this.productList = Object.assign({},response.data);
+        // 購物車無資料
         if(response.data.length===0){
           this.isCartEmpty=true;
           this.total = 0;
         }
         else
           this.isCartEmpty=false;
-
-        // 購物車數量都為1個，並計算金額
-        for(let i=0 ; i<response.data.length ; i++){
+        // 購物車設定數量都為1個
+        this.productNum.length = response.data.length;
+        for(let i=0 ; i<response.data.length ; i++)
           this.productNum[i]=1;
-          this.total = this.total + this.productList[i].price;
-        }
+        // 計算總金額
+        this.computeTotal();
       })
     },
     deleteProduct(item){
@@ -142,6 +122,9 @@ export default {
 
     }
   },
+  components:{
+    OrderForm,
+  }
 };
 </script>
 
@@ -183,49 +166,7 @@ export default {
   border-radius: 50%;
   background-color: wheat;
 }
-/* 訂單摘要 */
-.order-summary{
-  margin: 0 20px 0 20px;
-  border: 2px rgb(170, 170, 170) solid;
-  border-radius: 12px;
-  padding: 20px;
-  margin-top:30px;
-}
-.receiver-info{
-  margin-top: 20px;
-  gap: 10px 8%;
-}
-.receiver-info >input{
-  width: 100%;
-}
-.receiver-info div{
-  width:45%;
-}
-.receiver-info div input{
-  margin-top: 10px;
-  width: 100%;
-}
-.total{
-  font-weight: bold;
-  padding-top: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  width: 100%;
-}
-.send-order-btn{
-  border-color: rgb(255, 105, 105);
-  color:rgb(255, 105, 105);
-  background-color: white;
-  padding: 10px;
-  font-size: 20px;
-  width: 100%;
-  font-weight: bold;
-}
-.send-order-btn:hover{
-  transition: .6s;
-  color:white;
-  background-color: rgb(255, 105, 105);
-}
+
 @media (min-width:768px){
   .cart{
     flex-direction: row;
@@ -235,9 +176,6 @@ export default {
   }
   .cart-list{
     width: 100%;
-  }
-  .order-summary{
-    width: 30%;
   }
 }
 </style>
