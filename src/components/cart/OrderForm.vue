@@ -1,34 +1,58 @@
 <template>
     <div class="order col center-center">
       <h1 class="h1">訂單資料</h1>
-      <form class="receiver-info row flex-wrap">
+      <form class="order-info row flex-wrap">
         <label>電子信箱</label>
-        <input type="text">
+        <input type="email" v-model="orderInfo.email">
         <div>
           <label>姓名</label>
-          <input type="text">
+          <input type="text" v-model="orderInfo.name">
         </div>
         <div>
           <label>電話號碼</label>
-          <input type="text">
+          <input type="text" v-model="orderInfo.phoneNum">
         </div>
         <label>收件地址</label>
-        <input type="text">
+        <input type="text" v-model="orderInfo.address">
         <label>備註</label>
-        <input type="text">
+        <input type="text" v-model="orderInfo.note">
       </form>
 
       <div class="total row space-between-center">
         <p class="h2">購物車總計</p>
         <p class="h2 c-red">${{total}}</p>
       </div>
-      <button class="send-order-btn">送出訂單</button>
+      <button class="send-order-btn" @click="sendOrder">送出訂單</button>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
 export default{
-    props:['total']
+    props:['total','productList'],
+    data(){
+        return{
+            orderInfo:{
+                email:'',
+                name:'',
+                phoneNum:'',
+                address:'',
+                note:''
+            }
+        }
+    },
+    methods:{
+        sendOrder(){
+            console.log();
+            axios.post('/api/addOrder',{
+                orderInfo:      this.orderInfo,
+                productList:    this.productList,
+            }).then((response)=>{
+                alert(response.data.message);
+                this.$router.replace({path: '/users/transaction'});
+            })
+        }
+    }
 }
 </script>
 
@@ -41,17 +65,17 @@ export default{
   padding: 20px;
   margin-top:30px;
 }
-.receiver-info{
+.order-info{
   margin-top: 20px;
   gap: 10px 8%;
 }
-.receiver-info >input{
+.order-info >input{
   width: 100%;
 }
-.receiver-info div{
+.order-info div{
   width:45%;
 }
-.receiver-info div input{
+.order-info div input{
   margin-top: 10px;
   width: 100%;
 }

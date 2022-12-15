@@ -206,6 +206,7 @@ router.post('/api/addToCart', async(request,response)=>{
     }
   }
   catch(error){
+    // 沒找到對應session
     console.log("錯誤："+ error.message);
     console.log('購物車新增失敗...');
     response.send({
@@ -251,6 +252,44 @@ router.post('/api/removeFromCart', async(request,response)=>{
     response.end();
   }
 });
+
+// 新增訂單API
+// 需添加後端驗證 不能信任前端傳來的price 需要到資料庫用id尋找price計算總金額
+router.post('/api/addOrder', async(request,response)=>{
+  try{
+    await getCollection('dove' , 'transaction');
+    console.log('order\n',request.body.orderInfo);
+    console.log('prdocu\n',request.body.productList);
+    // 插入訂單資訊到資料庫
+    let insertObj = {
+      username: request.session.user.username,
+      orderInfo:request.body.orderInfo,
+      productList:request.body.productList,
+      orderDate:Date(),
+      status:"pending"
+    };
+    let resultObj = await insertData(insertObj);
+    // 移除購物車內容
+    await getCollection('dove' , 'cart');
+    let searchObj = {username:request.session.user.username};
+    resultObj = await updateData(searchObj,{$set:{product_id:[]}});
+    // 訂單資訊儲存完畢
+    if(resultObj.length!=0){
+      console.log('交易成功！');
+      response.send({
+        message:'交易成功！'
+      });
+    }
+  }
+  catch(error){
+    console.log("錯誤："+ error.message);
+  }
+  finally{
+    // 結束資料庫連線
+    if(client != null) client.close();
+    response.end();
+  }
+})
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
