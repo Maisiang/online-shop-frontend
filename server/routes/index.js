@@ -291,6 +291,27 @@ router.post('/api/addOrder', async(request,response)=>{
   }
 })
 
+router.get('/api/getOrder', async(request,response)=>{
+  try{
+    console.log(request.session.user.username,'查詢訂單')
+    await getCollection('dove' , 'transaction');
+    // 搜尋物件
+    let searchObj = { username:request.session.user.username };
+    let resultObj = await searchData(searchObj);
+    // 查詢完成
+    console.log("查詢結果：\n",resultObj);
+    response.json(resultObj);
+  }
+  catch(error){
+    console.log("錯誤："+ error.message);
+  }
+  finally{
+    // 結束資料庫連線
+    if(client != null) client.close();
+    response.end();
+  }
+})
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
