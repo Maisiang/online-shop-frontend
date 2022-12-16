@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Header v-if="this.$route.path!=='/search'"></Header>
-    <SearchHeader v-if="this.$route.path==='/search'"></SearchHeader>
+    <Header v-if="this.$route.path.indexOf('/search')===-1"></Header>
+    <SearchHeader v-if="this.$route.path.indexOf('/search')>=0"></SearchHeader>
     <router-view class="m-tabbar m-header h-full"></router-view>
     <TabBar></TabBar>
   </div>
@@ -17,7 +17,7 @@ export default {
     TabBar,
     Header,
     SearchHeader
-  }
+  },
 }
 </script>
 <style>

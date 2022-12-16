@@ -41,7 +41,7 @@ export default{
             // 路由到搜索頁
             if(this.$route.query.key === this.searchVal) return;
             this.$router.push({
-                name:'list',
+                name:'search-list',
                 query:{
                     key:this.searchVal
                 }
