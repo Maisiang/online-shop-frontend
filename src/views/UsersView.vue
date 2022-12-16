@@ -67,17 +67,9 @@ export default{
     }
   },
   mounted(){
-    let userInfo = sessionStorage.getItem('user-info');
-    // 未登入
-    if(!userInfo)
-    {
-      alert('請先登入會員！')
-      this.$router.replace('/login');
-    }
-    else{
-      this.userInfo = JSON.parse(userInfo);
+      this.userInfo = JSON.parse(sessionStorage.getItem('user-info'));
+      /* 避免載入未知資源 */
       this.loading = true;
-    }
   },
 };
 </script>

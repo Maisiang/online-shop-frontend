@@ -1,6 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 
+function isLogin(){
+  if(!sessionStorage.getItem('user-info'))
+  {
+    router.replace('/login');
+    return false;
+  }
+  else return true;
+}
+
 const routes = [
   {
     path: "/",
@@ -19,11 +28,15 @@ const routes = [
   {
     path: "/cart",
     name: "cart",
+    // 導航守衛 Navigation guard
+    beforeEnter:(to,from)=>{
+      return isLogin();
+    },
     component: () => import("../views/CartView.vue"),
   },
   {
     path: "/users",
-    //name: "Users",
+    name: "Users",
     children:[
       {
         path:"",
@@ -36,6 +49,10 @@ const routes = [
         component: () => import("../views/users/Transaction.vue"),
       },
     ],
+    // 導航守衛 Navigation guard
+    beforeEnter:(to,from)=>{
+      return isLogin();
+    },
     component: () => import("../views/UsersView.vue"),
   },
   {
@@ -68,3 +85,4 @@ const router = createRouter({
 });
 
 export default router;
+
