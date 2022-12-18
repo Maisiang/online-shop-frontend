@@ -13,7 +13,7 @@
               :key="index" @click="historyBtnSearch(item)">{{item}}</li>
 
           </ul>
-          <h3 class="h3" v-if="searchArr.length==0">暫無搜索紀錄</h3>
+          <h3 class="h3 m-t-l" v-if="searchArr.length==0">暫無搜索紀錄</h3>
       </div>
   </div>
 </template>

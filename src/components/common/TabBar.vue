@@ -3,7 +3,9 @@
         <ul class="row">
             <li class="col center-center" v-for="(item,index) in routerList" :key='index'
                 @click="switchTab(item.path)">
-                <img :src="$route.path.includes(item.path)?item.selected:item.active" alt="">
+                <div class="tabbar-img">
+                    <img :src="$route.path.includes(item.path)?item.selected:item.active">
+                </div>
                 <span class="h3" :class='$route.path.includes(item.path)?"selected":"active"'>{{item.title}}</span>
             </li>
         </ul>
@@ -58,19 +60,19 @@ export default{
     bottom:0;
     z-index: 1000;
     width:100%;
-    height: 10%;
+    height: 60px;
     background-color: rgb(50, 150, 255);
 }
 .tabbar ul{
     height: 100%;
     justify-content: space-around;
 }
-.tabbar  ul li img{
-    width: 40%;
-    cursor: pointer;
+.tabbar-img{
+    height: 60%;
+    text-align: center;
 }
-.tabbar  ul li span{
-    margin-top: 5px;
+.tabbar  ul li{
+    width: 20%;
     cursor: pointer;
 }
 .selected{

@@ -79,6 +79,8 @@ export default {
     /*min-height: 100%;*/
     height:auto;
     padding-bottom: 40px;
+    /* 交易紀錄左右按鈕 */
+    align-items: flex-start;
 }
 .swiper button{
     background: none;

@@ -7,14 +7,14 @@
       </div>
 
       <ul class="user-menu-list row flex-wrap center-center">
-        <li @click="activeMenu(item.name)" class="cursor-ptr noselect" v-for="(item,index) in menuList" :key="index">
-          {{item.name}}
+        <li @click="activeMenu(item.name , index)" v-for="(item,index) in menuList.data" :key="index"
+        :class='index===menuList.currentIndex?"active-menu-btn noselect":"not-active-menu-btn noselect"'>
+          <div class="row center-center">
+            {{item.name}}
+          </div>
         </li>
       </ul>
     </div>
-
-
-
     <div class="user-content col">
       <router-view v-bind:userInfo="userInfo"></router-view>
     </div>
@@ -26,21 +26,24 @@
 import axios from 'axios';
 export default{
   name: "UsersView",
-  //props: ['postTitle'],
   data(){
     return{
-      menuList:[
-        {name:'個人檔案'},
-        {name:'更改密碼'},
-        {name:'交易紀錄'},
-        {name:'會員登出'}
-      ],
+      menuList:{
+        currentIndex:0,
+        data:[
+          {name:'個人檔案'},
+          {name:'更改密碼'},
+          {name:'交易紀錄'},
+          {name:'會員登出'}
+        ]
+      },
       userInfo:{},
-      loading:false
+      loading:false,
     }
   },
   methods:{
-    activeMenu(menuName){
+    activeMenu(menuName, index){
+      this.menuList.currentIndex = index;
       if(menuName==='會員登出')
         this.goLogout();
       else if(menuName==='個人檔案'){
@@ -64,17 +67,22 @@ export default{
         if(response.data.isLogout)
           this.$router.push('/');
       })
+    },
+    getUser(){
+      axios.get('/api/getUser').then((response)=>{
+        this.userInfo = Object.assign({}, response.data);
+        /* 避免載入未知資源 */
+        this.loading = true;
+      })
     }
   },
   mounted(){
-      this.userInfo = JSON.parse(sessionStorage.getItem('user-info'));
-      /* 避免載入未知資源 */
-      this.loading = true;
+      this.getUser();
   },
 };
 </script>
 
-<style>
+<style scoped>
 .user-menu{
   color: rgb(30, 100, 130);
   background-color: #d8d8d8;
@@ -91,7 +99,12 @@ export default{
   gap: 20px;
 }
 .user-menu-list{
-  gap: 40px 50%;
+  width: 100%;
+  gap: 30px 10%;
+}
+.user-menu-list li{
+  width: 40%;
+  line-height: 30px;
 }
 .user-content{
   padding: 20px;
@@ -122,6 +135,10 @@ export default{
       height: auto;
       margin-top: 40px;
       background-color: #d8d8d8;
+    }
+    .user-menu-list li{
+      width: 100%;
+      line-height: 40px;
     }
 }
 </style>

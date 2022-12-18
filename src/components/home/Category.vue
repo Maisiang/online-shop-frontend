@@ -2,7 +2,7 @@
     <div class="category">
         <div class="category-text">
             <h1 class="h1">所有產品類別</h1>
-            <p>探索我們針對日常需求而設計的高品質科技產品。</p>
+            <p>探索我們針對日常需求設計的高品質產品。</p>
             <p>提供多樣的選擇，給顧客最值得信賴的服務。</p>
         </div>
         <div v-for="(item,index) in categoryList" :key="index">
@@ -23,8 +23,8 @@ export default{
                 {name:'耳機' , imgUrl:require('@/assets/images/category/headphones.png')},
                 {name:'滑鼠' , imgUrl:require('@/assets/images/category/soundbar.png')},
                 {name:'鍵盤' , imgUrl:require('@/assets/images/category/soundcards.png')},
-                {name:'泡麵' , imgUrl:require('@/assets/images/category/speakers.png')},
-                {name:'伏特加' , imgUrl:require('@/assets/images/category/sxfi.png')},
+                {name:'喇叭' , imgUrl:require('@/assets/images/category/speakers.png')},
+                {name:'路由器' , imgUrl:require('@/assets/images/category/sxfi.png')},
                 {name:'筆電' , imgUrl:require('@/assets/images/category/webcam.png')},
             ],
         }
@@ -37,12 +37,11 @@ export default{
     padding: 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 3fr 3fr 3fr;
-    grid-gap: 10px;
-
+    grid-template-rows: 1fr 2fr 2fr 2fr;
 }
 .category-text{
     grid-column: span 2;
+    margin-bottom: 10px;
 }
 
 .category-img-list{
@@ -98,6 +97,7 @@ export default{
         display: grid;
         grid-template-columns: 2fr 1fr 1fr 1fr;
         grid-template-rows: 1fr 1fr;
+        grid-gap: 10px;
     }
     .category-text{
         grid-column: span 1;

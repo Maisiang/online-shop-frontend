@@ -134,10 +134,12 @@ img{
     margin-right: 30px;
 }
 
-/* for test */
-.bg{
-    background-color: wheat;
-}
-.bd{
-    border: 3px black solid;
+/* 商品、會員選單按鈕 */
+.active-menu-btn{
+    background-color: rgba(50, 150, 255,.5);
+  }
+.not-active-menu-btn:hover{
+    background-color: #c7c7c7; /*d5d5d5*/
+    font-weight: bold;
+    cursor: pointer;
 }

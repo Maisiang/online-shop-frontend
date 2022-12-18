@@ -37,8 +37,9 @@ export default{
     background-color: rgb(50, 150, 255);
 }
 .logo{
-    height: 100%;
+    height: 80%;
 }
+
 .search{
     background-color: #fff;
     height: 50%;
@@ -54,5 +55,9 @@ export default{
     margin-right: 10px;
     height:50%;
     cursor: pointer;
+}
+@media (min-width:768px){
+    /* 圖片會跑掉 */
+
 }
 </style>

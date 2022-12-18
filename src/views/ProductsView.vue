@@ -3,14 +3,15 @@
     <div class="products-menu col center-center">
       <h1 class="h1 title">分類</h1>
       <ul class="products-menu-list row space-around-center noselect flex-wrap">
-        <li :class='index===menuList.currentIndex?"active":"not-active cursor-ptr"' v-for="(item,index) in menuList.data" :key="index"
-          @click="getData(index)">{{item.name}}</li>
+        <li :class='index===menuList.currentIndex?"active-menu-btn":"not-active-menu-btn"' v-for="(item,index) in menuList.data" :key="index"
+          @click="changeMenuNum(index)">{{item.name}}</li>
       </ul>
     </div>
-   
+
     <div class="m-center col align-center">
       <h1 class="h1 title">{{menuList.data[menuList.currentIndex].name}}</h1>
       <section class="products-list row flex-wrap">
+        <Sort v-show="!showNotFound" v-on:getDataFromChild="getDataFromChild" :queryKey="menuList.data[menuList.currentIndex].category" :key="menuList.currentIndex"></Sort>
         <div class="product row cursor-ptr" v-for="(item,index) in resObj" :key="index">
           <div class="product-img row center-center">
             <img :src="require('@/assets/images/products/'+item.imgUrl)" />
@@ -29,12 +30,14 @@
 </template>
 
 <script>
-import axios from 'axios';
 import AddToCartBtn from '@/components/common/AddToCartBtn.vue';
+import Sort from '@/components/common/Sort.vue';
 export default {
   name: "ListView",
   data(){
     return{
+      resObj : {},
+      showNotFound: false,
       menuList:{
         currentIndex: 0 ,
         data:[
@@ -46,33 +49,23 @@ export default {
           {name:'筆電' , category:'筆電'},
         ]
       },
-      resObj : {},
     }
   },
-  created(){
-        this.getData();
-    },
     methods:{
-        // 搜尋商品
-        async getData(index = 0){
-          // 儲存目前頁面號碼
+        // 儲存目前頁面號碼
+        async changeMenuNum(index = 0){
           this.menuList.currentIndex = index;
-            axios.get('/api/get',{
-                // 傳遞給伺服器的搜尋字串
-                params:{
-                    name: this.menuList.data[index].category,
-                    sortStr: '',
-                    sortNum: 0,
-                }
-            // 接收搜尋結果
-            }).then((response)=>{
-                // 將response內容複製到 resObj
-                this.resObj = Object.assign({},response.data);
-            })
         },
+        // 取得分類的商品
+        getDataFromChild(data){
+          if(data.length===0) this.showNotFound=true;
+          else this.showNotFound=false;
+          this.resObj = Object.assign([],data);
+        }
     },
   components:{
-    AddToCartBtn
+    AddToCartBtn,
+    Sort
   }
 };
 </script>
@@ -91,8 +84,6 @@ export default {
   width:33%;
   text-align: center;
 }
-
-
 .products-list{
   /*width:95%;*/
   gap: 20px 1%;
@@ -125,13 +116,6 @@ export default {
 .title{
   margin-bottom: 20px;
   margin-top: 30px;
-}
-.active{
-  background-color: rgba(50, 150, 255,.5);
-}
-.not-active:hover{
-  background-color: #d5d5d5;
-  font-weight: bold;
 }
 
 

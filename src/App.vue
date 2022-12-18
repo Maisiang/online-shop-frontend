@@ -22,7 +22,7 @@ export default {
 </script>
 <style>
 .m-tabbar{
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 }
 .m-header{
   margin-top: 60px;

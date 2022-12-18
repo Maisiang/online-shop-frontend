@@ -24,7 +24,6 @@ export default {
         return{
             swiperList:[
                 {imgUrl:require('@/assets/images/swiper/swiper1.jpg')},
-                {imgUrl:require('@/assets/images/swiper/swiper3.jpg')},
                 {imgUrl:require('@/assets/images/swiper/swiper2.jpg')},
             ],
         }
