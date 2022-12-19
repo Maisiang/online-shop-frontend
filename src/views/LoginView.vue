@@ -69,8 +69,7 @@ export default{
               // 登入成功
               if(response.data.isLogin){
                   // 儲存到sessionStorage
-                  sessionStorage.setItem('user-info',JSON.stringify(response.data.userInfo))
-                  console.log('session儲存:',response.data.userInfo);
+                  sessionStorage.setItem('user-info',JSON.stringify(response.data.userInfo.username))
                   // 切換路由到首頁
                   this.$router.push('/')
               }

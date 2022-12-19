@@ -1,11 +1,23 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 
+import axios from "axios";
 function isLogin(){
+  console.log('檢查')
   if(!sessionStorage.getItem('user-info'))
   {
-    router.replace('/login');
-    return false;
+    console.log('無session')
+    axios.get('/api/isLogin').then((response)=>{
+      if(response.data.isLogin===true){
+        console.log('設置session')
+        sessionStorage.setItem('user-info',JSON.stringify(response.data.username))
+        return true;
+      }
+      else{
+        router.replace('/login');
+        return false;
+      }
+    })
   }
   else return true;
 }

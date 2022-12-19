@@ -3,7 +3,8 @@ module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave:false,
   devServer:{
-    host:'127.0.0.1',
+    //host:'127.0.0.1',
+    host:'114.47.240.147',
     proxy:{
       '/api':{
         target: "http://localhost:3000", // Node Express API的 URL

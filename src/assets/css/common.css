@@ -15,8 +15,6 @@ img{
 #app,html, body {
     min-height: 100% !important;
     height: auto;
-/*
-    border: 5px rgb(158, 92, 92) solid;*/
 }
 .h-full{
     height: 100%;

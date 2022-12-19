@@ -27,7 +27,7 @@
                 </div>
                 <div class="row space-around-center">
                     <p>訂單狀態：{{item.status}}</p>
-                    <p>訂單金額: <b>$1000</b></p>
+                    <p>訂單金額: <b>${{item.total}}</b></p>
                 </div>
 
                 <div class="order-info col">

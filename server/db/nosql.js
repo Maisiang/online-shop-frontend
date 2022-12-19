@@ -11,6 +11,7 @@ async function getCollection(dbName='dove' , collectionName = 'product'){
         // 選取資料庫和集合
         db = client.db(dbName);
         collection = db.collection(collectionName);
+        return client;
     }
     catch(error){
         console.log("錯誤："+ error.message);
@@ -37,13 +38,19 @@ async function updateData(whereObj, updateObj){
     return await collection.updateOne(whereObj,updateObj);
 }
 
+async function closeClient(){
+    let tmp = client.s.hasBeenClosed;
+    if(client != null) await client.close();
+    console.log('DBClient Close Status:',tmp,' -> ',client.s.hasBeenClosed);
+}
+
 
 module.exports = {
     collection , 
-    client , 
     getCollection,
     searchData,
     insertData,
     updateData,
+    closeClient
 };
 

@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
+
 // 資料庫
-let {client, getCollection, searchData, insertData, updateData} = require('../db/nosql.js')
+let client = null;
+let {getCollection, searchData, insertData, updateData, closeClient} = require('../db/nosql.js')
 const { ObjectId } = require('mongodb');
 // 配置sessionn
 const session = require('express-session')
@@ -18,13 +20,49 @@ let multer = require('multer');
 let upload = multer();
 router.use(upload.array());
 
+const onFinished = require('on-finished');
 
-// 取得用戶資料API
+// Middleware - 處理身分驗證 
+router.use(auth = function(request,response,next){
+  try{
+    console.log('\n');
+    // 當發送響應後執行
+    onFinished(response, async(error) => {
+      if(error) console.log("onFinished錯誤：",error);
+      // 關閉資料庫連線
+      if(client!=null){
+        await closeClient();
+        client=null;
+      }
+    });
+    
+    // 設定不用身分驗證的路由
+    const notAuthRoute=['/api/logout','/api/login','/api/register','/api/get'];
+    if(notAuthRoute.indexOf(request.path)!=-1){
+      return next();
+    }
+    // 其餘頁面要做身分驗證
+    console.log('身分驗證',request.session.user);
+    if(request.session.user===undefined){
+      console.log('請求失敗：',request.method,request.path);
+      response.send({
+        message:'操作失敗，請先登入會員！'
+      });
+      return false;
+    }
+    next();
+  }
+  catch(error){
+    console.log("錯誤："+ error.message);
+  }
+});
+
+// 取得用戶資料
 router.get('/api/getUser' ,async (request,response)=>{
   try{
-    console.log("\n取得用戶資料：",request.session.user.username);
+    console.log("取得用戶資料：",request.session.user.username);
     // 搜尋用戶名是否存在
-    await getCollection('dove','users');
+    client = await getCollection('dove','users');
     let searchObj = {username: request.session.user.username};
     let resultObj = await searchData(searchObj , request.query.sortStr , request.query.sortNum);
     // 搜尋完成
@@ -37,18 +75,13 @@ router.get('/api/getUser' ,async (request,response)=>{
   catch(error){
     console.log("錯誤："+ error.message);
   }
-  finally{
-    // 結束資料庫連線
-    if(client != null) client.close();
-    response.end();
-  }
 });
-// 查詢商品資料API
+// 查詢商品資料
 router.get('/api/get' ,async (request,response)=>{
   try{
-    console.log("\n搜尋商品：",request.query.name);
+    console.log("搜尋商品：",request.query.name);
     // 搜尋符合名稱的商品
-    await getCollection();
+    client = await getCollection();
     let searchObj = { name:{$regex: request.query.name} };
     let resultObj = await searchData(searchObj , request.query.sortStr , request.query.sortNum);
     // 搜尋完成
@@ -57,19 +90,14 @@ router.get('/api/get' ,async (request,response)=>{
   catch(error){
     console.log("錯誤："+ error.message);
   }
-  finally{
-    // 結束資料庫連線
-    if(client != null) client.close();
-    response.end();
-  }
 });
 
-// 用戶登入API
+// 用戶登入
 router.post('/api/login',async (request,response)=>{
   try{
-        console.log('\n用戶登入：',request.body);
+        console.log('用戶登入：',request.body);
         // 搜尋用戶名和密碼是否一樣(注意SQLi)
-        await getCollection('dove','users');
+        client = await getCollection('dove','users');
         searchObj = { 
           username: request.body.username,
           password: request.body.password
@@ -104,19 +132,14 @@ router.post('/api/login',async (request,response)=>{
   catch(error){
     console.log("錯誤："+ error.message);
   }
-  finally{
-    // 結束資料庫連線
-    if(client != null) client.close();
-    response.end();
-  }
 });
 
-// 用戶註冊API
+// 用戶註冊
 router.post('/api/register', async (request,response)=>{
   try{
-    console.log('\n用戶註冊：',request.body)
+    console.log('用戶註冊：',request.body)
     // 搜尋帳號是否存在
-    await getCollection('dove','users');
+    client = await getCollection('dove','users');
     let searchObj = {username: request.body.username};
     let resultObj = await searchData(searchObj);
     // 搜尋Email是否存在
@@ -166,14 +189,9 @@ router.post('/api/register', async (request,response)=>{
   catch(error){
     console.log("錯誤："+ error.message);
   }
-  finally{
-    // 結束資料庫連線
-    if(client != null) client.close();
-    response.end();
-  }
 });
 
-// 用戶登出API
+// 用戶登出
 router.post('/api/logout', (request,response)=>{
   request.session.destroy();
   response.send({
@@ -182,16 +200,16 @@ router.post('/api/logout', (request,response)=>{
   })
 });
 
-// 查詢用戶購物車API
+// 查詢用戶購物車
 router.get('/api/getCart' ,async (request,response)=>{
   try{
-    console.log("\n搜尋用戶購物車：",request.session.user.username);
+    console.log("搜尋用戶購物車：",request.session.user.username);
     // 搜尋用戶購物車的儲存的商品id
-    await getCollection('dove','cart');
+    client = await getCollection('dove','cart');
     let searchObj = {username:request.session.user.username};
     let resultObj = await searchData(searchObj);
     // 透過id搜尋product集合
-    await getCollection('dove','product');
+    client = await getCollection('dove','product');
     searchObj = {
       "_id" : {
         "$in" : resultObj[0].product_id
@@ -202,19 +220,14 @@ router.get('/api/getCart' ,async (request,response)=>{
   catch(error){
     console.log("錯誤："+ error.message);
   }
-  finally{
-    // 結束資料庫連線
-    if(client != null) client.close();
-    response.end();
-  }
 });
 
-// 添加商品到用戶購物車API
+// 添加商品到用戶購物車
 router.post('/api/addToCart', async(request,response)=>{
   // 後端添加判斷： 確認商品是否存在
   try{
-    console.log('\n添加商品到購物車',request.body)
-    await getCollection('dove' , 'cart');
+    console.log('添加商品到購物車',request.body)
+    client = await getCollection('dove' , 'cart');
     let searchObj = {username:request.session.user.username};
     let insertObj = {$addToSet: {product_id: ObjectId(request.body.product_id)}};
     resultObj = await updateData(searchObj,insertObj);
@@ -227,26 +240,16 @@ router.post('/api/addToCart', async(request,response)=>{
     }
   }
   catch(error){
-    // 沒找到對應session
     console.log("錯誤："+ error.message);
-    console.log('購物車新增失敗...');
-    response.send({
-      message:'商品加到購物車失敗...\n請先登入會員！'
-    });
-  }
-  finally{
-    // 結束資料庫連線
-    if(client != null) client.close();
-    response.end();
   }
 });
 
-// 移除商品從用戶購物車API
+// 移除商品從用戶購物車
 router.post('/api/removeFromCart', async(request,response)=>{
   // 後端判斷：因透過session.username去移除商品，所以不判斷session
   try{
-    console.log('\n移除購物車商品：',request.body)
-    await getCollection('dove' , 'cart');
+    console.log('移除購物車商品：',request.body)
+    client = await getCollection('dove' , 'cart');
     let searchObj = {username :request.session.user.username};
     let insertObj = {$pull    :{product_id: ObjectId(request.body.product_id)}};
     resultObj = await updateData(searchObj,insertObj);
@@ -267,30 +270,35 @@ router.post('/api/removeFromCart', async(request,response)=>{
   catch(error){
     console.log("錯誤："+ error.message);
   }
-  finally{
-    // 結束資料庫連線
-    if(client != null) client.close();
-    response.end();
-  }
 });
 
-// 新增訂單API
-// 需添加後端驗證 不能信任前端傳來的price 需要到資料庫用id尋找price計算總金額
+// 新增訂單  - 需添加後端驗證 
 router.post('/api/addOrder', async(request,response)=>{
   try{
-    console.log('\n用戶送出訂單：',request.body)
-    await getCollection('dove' , 'transaction');
+    console.log('用戶送出訂單：',request.body)
+
+    // 到資料庫用id尋找price計算總金額
+    client = await getCollection('dove' , 'product');
+    let total = 0;
+    for(let i=0 ; i<request.body.productList.length ; i++){
+      let searchObj = {_id:ObjectId(request.body.productList[i]._id)};
+      let resultObj = await searchData(searchObj);
+      total = total + resultObj[0].price * request.body.productList[i].num;
+    }
+
+    client = await getCollection('dove' , 'transaction');
     // 插入訂單資訊到資料庫
     let insertObj = {
       username: request.session.user.username,
       orderInfo:request.body.orderInfo,
       productList:request.body.productList,
+      total:total,
       orderDate:Date(),
       status:"pending"
     };
     let resultObj = await insertData(insertObj);
     // 移除用戶購物車所有商品id
-    await getCollection('dove' , 'cart');
+    client =  await getCollection('dove' , 'cart');
     let searchObj = {username:request.session.user.username};
     resultObj = await updateData(searchObj,{$set:{product_id:[]}});
     // 訂單資訊儲存完畢
@@ -304,19 +312,14 @@ router.post('/api/addOrder', async(request,response)=>{
   catch(error){
     console.log("錯誤："+ error.message);
   }
-  finally{
-    // 結束資料庫連線
-    if(client != null) client.close();
-    response.end();
-  }
 })
 
-// 取得訂單API
+// 取得訂單
 router.get('/api/getOrder', async(request,response)=>{
   try{
-    console.log('\n查詢交易紀錄',request.session.user.username)
+    console.log('查詢交易紀錄',request.session.user.username)
     // 搜尋該用戶所有交易紀錄
-    await getCollection('dove' , 'transaction');
+    client = await getCollection('dove' , 'transaction');
     let searchObj = {username: request.session.user.username};
     let resultObj = await searchData(searchObj);
     // 查詢完成
@@ -325,12 +328,16 @@ router.get('/api/getOrder', async(request,response)=>{
   catch(error){
     console.log("錯誤："+ error.message);
   }
-  finally{
-    // 結束資料庫連線
-    if(client != null) client.close();
-    response.end();
-  }
 })
+
+// 維持用戶登入狀態
+router.get('/api/isLogin', (request,response)=>{
+  response.send({
+    isLogin:true,
+    username:request.session.user.username
+  });
+})
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

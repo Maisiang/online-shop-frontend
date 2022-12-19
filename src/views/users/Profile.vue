@@ -30,6 +30,7 @@ export default{
     gap: 20px 0;
 }
 .user-field{
+    width: 150px;
     color:rgb(82, 82, 82)
 }
 
