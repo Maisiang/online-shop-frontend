@@ -3,24 +3,21 @@
       <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"/>
 
       <div class="content row flex-wrap space-around-center">
-          <form class="sign-in col center-center"
-          method="POST" action="/api/login"
+          <form class="col center-center"
           @submit.prevent="login">
               <h1 class="h1">登入會員</h1>
               <input maxlength="12" placeholder="Username 用戶名" type="text" 
               ref="loginUsername">
-              <div class="login-password row center-center">
+              <div class="password-field row center-center">
                   <input maxlength="12" placeholder="Password 密碼" type="password"
                   ref="loginPassword">
                   <i v-if="loginEye.status" @click="changeEye(loginEye , $refs.loginPassword)" class="fas fa-eye pws-eye"></i>
                   <i v-if="!loginEye.status" @click="changeEye(loginEye, $refs.loginPassword)" class="fas fa-eye-slash pws-eye"></i>
               </div>
-
-
               <input type="submit" value="登入">
           </form>
 
-          <form class="sign-up col center-center" @submit.prevent="register"
+          <form class="col center-center" @submit.prevent="register"
           enctype="multipart/form-data" id="registerForm">
               <h1 class="h1">註冊會員</h1>
               <input maxlength="12" placeholder="Username 用戶名" type="text" 

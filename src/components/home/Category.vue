@@ -20,12 +20,12 @@ export default{
     data(){
         return{
             categoryList:[
-                {name:'耳機' , imgUrl:require('@/assets/images/category/headphones.png')},
-                {name:'滑鼠' , imgUrl:require('@/assets/images/category/soundbar.png')},
-                {name:'鍵盤' , imgUrl:require('@/assets/images/category/soundcards.png')},
-                {name:'喇叭' , imgUrl:require('@/assets/images/category/speakers.png')},
-                {name:'路由器' , imgUrl:require('@/assets/images/category/sxfi.png')},
-                {name:'筆電' , imgUrl:require('@/assets/images/category/webcam.png')},
+                {name:'耳機' , imgUrl:require('@/assets/images/category/headphones.jpg')},
+                {name:'滑鼠' , imgUrl:require('@/assets/images/category/mouse.jpg')},
+                {name:'鍵盤' , imgUrl:require('@/assets/images/category/keyboard.jpg')},
+                {name:'喇叭' , imgUrl:require('@/assets/images/category/speakers.jpg')},
+                {name:'路由器' , imgUrl:require('@/assets/images/category/router.jpg')},
+                {name:'筆電' , imgUrl:require('@/assets/images/category/laptop.jpg')},
             ],
         }
     },

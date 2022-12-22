@@ -88,3 +88,17 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+
+/**
+ * error handler
+ */
+process.on('uncaughtException', function(err) {
+  console.log('同步：',err);
+  process.exit(1);
+})
+ 
+process.on('unhandledRejection', function(err) {
+  console.log('非同步',err);
+  process.exit(1)
+})

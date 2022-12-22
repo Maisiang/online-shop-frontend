@@ -129,10 +129,10 @@ export default {
   gap: 10px;
 }
 .cart-img{
-  width:30%;
+  width:50%;
   height: 100px;
-  padding: 20px;
 }
+
 .cart-info{
   width: 50%;
   height: 100px;  
@@ -154,6 +154,9 @@ export default {
   box-sizing: border-box;
   height: 100%;
 }
+.cart-delete{
+  width:auto;
+}
 .cart-delete:hover{
   border-radius: 50%;
   background-color: wheat;
@@ -168,6 +171,9 @@ export default {
   }
   .cart-list{
     width: 100%;
+  }
+  .cart-img{
+    width:30%;
   }
 }
 </style>

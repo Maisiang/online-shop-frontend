@@ -1,15 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-
 import axios from "axios";
-function isLogin(){
-  console.log('檢查')
+
+async function isLogin(){
   if(!sessionStorage.getItem('user-info'))
   {
-    console.log('無session')
-    axios.get('/api/isLogin').then((response)=>{
+    await axios.get('/api/isLogin').then((response)=>{
       if(response.data.isLogin===true){
-        console.log('設置session')
         sessionStorage.setItem('user-info',JSON.stringify(response.data.username))
         return true;
       }
@@ -30,12 +27,12 @@ const routes = [
   },
   {
     path: "/home",
-    component: HomeView,
+    redirect : '/',
   },
   {
     path: "/products",
     name: "products",
-    component: () => import("../views/ProductsView.vue"),
+    component: () => import("../views/ProductView.vue"),
   },
   {
     path: "/cart",
@@ -95,6 +92,9 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
-
+// 切換頁面移到最上方
+router.afterEach((to, from,next) => {
+  window.scrollTo(0,0);
+})
 export default router;
 

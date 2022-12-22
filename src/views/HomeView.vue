@@ -1,7 +1,7 @@
 <template>
   <div class="home noselect">
-    <Swiper></Swiper>
-    <Category></Category>
+      <Swiper></Swiper>
+      <Category></Category>
   </div>
 </template>
 

@@ -1,6 +1,7 @@
 <template>
   <div class="user">
     <div class="user-menu col center-center">
+      
       <div class="user-avater row center-center">
         <img v-if="loading" :src="require('@/assets/images/photo/'+ userInfo.avatar)" />
         <h1 class="h1">{{userInfo.username}}</h1>
@@ -70,9 +71,18 @@ export default{
     },
     getUser(){
       axios.get('/api/getUser').then((response)=>{
-        this.userInfo = Object.assign({}, response.data);
-        /* 避免載入未知資源 */
-        this.loading = true;
+        if(response.data.isLogin === true){
+          this.userInfo = Object.assign({}, response.data);
+          /* 避免載入未知資源 */
+          this.loading = true;
+        }
+        else{
+          alert('登入已失效，請重新登入！')
+          // 移除session
+          sessionStorage.removeItem('user-info');
+          this.loading = false;
+          this.$router.replace('/login');
+        }
       })
     }
   },
