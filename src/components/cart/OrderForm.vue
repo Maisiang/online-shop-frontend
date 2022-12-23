@@ -44,7 +44,7 @@ export default{
     methods:{
         sendOrder(){
             console.log();
-            axios.post('/api/addOrder',{
+            axios.post('/api/transaction',{
                 orderInfo:      this.orderInfo,
                 productList:    this.productList,
             }).then((response)=>{

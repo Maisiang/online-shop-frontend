@@ -1,16 +1,20 @@
 <template>
   <div class="login">
       <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"/>
-
+        <div class="type-rule text-align-center m-center">
+            <p class="c-red">用戶名、密碼</p>
+            <p>請輸入6-12個字元</p>
+            <p>大小寫英文和數字</p>
+        </div>
       <div class="content row flex-wrap space-around-center">
           <form class="col center-center"
           @submit.prevent="login">
               <h1 class="h1">登入會員</h1>
               <input maxlength="12" placeholder="Username 用戶名" type="text" 
-              ref="loginUsername">
+              ref="loginUsername" autocomplete="username" pattern="^[a-zA-Z0-9]{6,12}$" required>
               <div class="password-field row center-center">
                   <input maxlength="12" placeholder="Password 密碼" type="password"
-                  ref="loginPassword">
+                  ref="loginPassword" autocomplete="current-password" pattern="^[a-zA-Z0-9]{6,12}$" required>
                   <i v-if="loginEye.status" @click="changeEye(loginEye , $refs.loginPassword)" class="fas fa-eye pws-eye"></i>
                   <i v-if="!loginEye.status" @click="changeEye(loginEye, $refs.loginPassword)" class="fas fa-eye-slash pws-eye"></i>
               </div>
@@ -21,11 +25,12 @@
           enctype="multipart/form-data" id="registerForm">
               <h1 class="h1">註冊會員</h1>
               <input maxlength="12" placeholder="Username 用戶名" type="text" 
-              ref="registerUsername" name="username">
-              <input type="email" placeholder="Email 電子郵件" name="email" ref="registerEmail">
+                    ref="registerUsername" name="username" autocomplete="username" pattern="^[a-zA-Z0-9]{6,12}$" required>
+              <input type="email" placeholder="Email 電子郵件" name="email" ref="registerEmail"
+              pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$" required>
               <div class="password-field row center-center">
-                  <input maxlength="12" placeholder="Password 密碼" type="password"
-                  ref="registerPassword" name="password">
+                  <input maxlength="12" placeholder="Password 密碼" type="password" pattern="^[a-zA-Z0-9]{6,12}$" required
+                        ref="registerPassword" name="password" autocomplete="current-password">
                   <i v-if="registerEye.status" @click="changeEye(registerEye , $refs.registerPassword)" class="fas fa-eye pws-eye"></i>
                   <i v-if="!registerEye.status" @click="changeEye(registerEye, $refs.registerPassword)" class="fas fa-eye-slash pws-eye"></i>
               </div>
@@ -66,20 +71,15 @@ export default{
               // 登入成功
               if(response.data.isLogin){
                   // 儲存到sessionStorage
-                  sessionStorage.setItem('user-info',JSON.stringify(response.data.userInfo.username))
+                  sessionStorage.setItem('user-info',JSON.stringify(response.data.username))
                   // 切換路由到首頁
                   this.$router.push('/')
               }
-
           })
       },
       register(){
           // 通過前端驗證格式
           if(!this.checkUserFormat('帳號',this.$refs.registerUsername)){
-              console.log('驗證失敗');
-              return false;
-          }
-          if(!this.checkUserFormat('電子信箱',this.$refs.registerEmail)){
               console.log('驗證失敗');
               return false;
           }
@@ -94,21 +94,15 @@ export default{
               header:{'content-type': 'multipart/form-data'}
           }).then((response)=>{
               alert(response.data.message);
-              if(response.data.isRegister)
-                  this.$router.push('/')
+              if(response.data.isRegister){
+                this.$router.push('/')
+              }
+                  
           })
       },
       checkUserFormat(verity , refs){
           console.log('開始驗證'+verity);
           let value = refs.value;
-          if(verity==='電子信箱'){
-              if(value.length===0){
-                  alert('請輸入電子信箱');
-                  refs.focus();
-                  return false;
-              }
-              else return true;
-          }
           // 限制只能輸入英文及數字
           for(let i=0 ; i<value.length ; i++){
               if(!((value[i]>='a' && value[i]<='z')||
@@ -139,13 +133,19 @@ export default{
 </script>
 
 <style scoped>
+.type-rule{
+    margin-top: 70px;
+    padding: 10px;
+    /*border:5px rgb(50, 150, 255) dashed;*/
+    width: 80%;
+}
 .content{
   min-height: 70vh;
   height: auto;
 }
 .content form{
   color:rgb(50, 150, 255);
-  margin-top: 60px;
+  margin-top: 40px;
   padding: 50px;
   background-color: #f5f5f5;
   box-shadow: 10px 10px 25px rgba(0,0,0,.5);
@@ -180,5 +180,14 @@ export default{
   margin-top: 20px;
   margin-left: -23px;
 }
+@media (min-width:768px){
+    .content{
+        min-height: 60vh;
+        height: auto;
+    }
+    .content form{
+        margin-top: -30px;
+    }
 
+}
 </style>

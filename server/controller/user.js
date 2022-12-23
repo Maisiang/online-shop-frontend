@@ -83,18 +83,13 @@ exports.login = async(request,response)=>{
     // 用戶存在
     else{
         console.log('登入成功！')
-        // Session 儲存用戶資訊和登入狀態
-        request.session.user = request.body;
-        request.session.islogin = true;
-        // 傳送資訊到客戶端
+        // Session 儲存用戶資訊
+        request.session.user = query[0];
+        // 傳送資訊到客戶端 (不包含密碼)
         response.send({
             isLogin:true,
-            message:'登入成功！',
-            userInfo:{
-                username: query[0].username,
-                email   : query[0].email,
-                avatar  : query[0].avatar
-            }
+            message: '登入成功！',
+            username: query[0].username,
         });
     }
 }
@@ -104,7 +99,6 @@ exports.logout = async(request,response)=>{
     console.log('用戶登出');
     request.session.destroy();
     response.send({
-        isLogout:true,
         message:'登出成功！'
     })
 }
@@ -113,6 +107,11 @@ exports.logout = async(request,response)=>{
 exports.isLogin = async(request,response)=>{
     response.send({
         isLogin:true,
-        username:request.session.user.username
+        userInfo: {
+            username:request.session.user.username,
+            email:request.session.user.email,
+            avatar: request.session.user.avatar
+        },
+        
     });
 }

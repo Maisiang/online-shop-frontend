@@ -4,7 +4,8 @@ module.exports = defineConfig({
   lintOnSave:false,
   devServer:{
     //host:'127.0.0.1',
-    host:'114.47.231.93',
+    //host:'114.47.230.106',
+    host:'itdove.ddns.net',
     proxy:{
       '/api':{
         target: "http://localhost:3000", // Node Express API的 URL

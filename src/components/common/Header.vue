@@ -1,6 +1,6 @@
 <template>
     <header class="header row space-between-center">
-        <a class="logo" href="/"><img src="@/assets/logo.png"></a>
+        <a class="logo" href="/"><img src="@/assets/images/logo.png"></a>
 
         <div class="search row center-center" @click="goSearch">
             <input class="search-input" type="text">
@@ -55,9 +55,5 @@ export default{
     margin-right: 10px;
     height:50%;
     cursor: pointer;
-}
-@media (min-width:768px){
-    /* 圖片會跑掉 */
-
 }
 </style>

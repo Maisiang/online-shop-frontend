@@ -8,6 +8,8 @@ var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
 
+//http.globalAgent = new http.Agent({ keepAlive:true });
+
 /**
  * Get port from environment and store in Express.
  */
@@ -99,6 +101,7 @@ process.on('uncaughtException', function(err) {
 })
  
 process.on('unhandledRejection', function(err) {
+  // fs.writeFile()
   console.log('非同步',err);
   process.exit(1)
 })

@@ -48,7 +48,7 @@ export default{
                 this.sortList.data[oldIndex].sortNum = 1;
             // 變更排序(遞增,遞減)
             this.sortList.data[index].sortNum = this.sortList.data[index].sortNum * -1;
-            axios.get('/api/get',{
+            axios.get('/api/product',{
                 // 傳遞給伺服器的搜尋字串
                 params:{
                     name: this.queryKey,

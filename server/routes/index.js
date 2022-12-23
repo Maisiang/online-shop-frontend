@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-
 // 配置sessionn
 const session = require('express-session')
 router.use(session({
@@ -12,11 +11,6 @@ router.use(session({
     sameSite: 'strict',
   }
 }))
-
-// 資料庫
-let client = null;
-let {getCollection, searchData, insertData, updateData, closeClient} = require('../db/nosql.js')
-let { ObjectId } = require('mongodb');
 
 // 所有路由
 const user = require('../controller/user');
@@ -30,10 +24,8 @@ const transaction = require('../controller/transaction');
 router.use(auth = function(request,response,next){
   try{
     console.log('\n');
-
-    
     // 設定不用身分驗證的路由
-    const notAuthRoute=['/logout','/login','/register','/get'];
+    const notAuthRoute=['/logout','/login','/register','/product'];
     if(notAuthRoute.indexOf(request.path)!=-1){
       return next();
     }
@@ -47,7 +39,7 @@ router.use(auth = function(request,response,next){
       });
       return false;
     }
-    // 通過驗證
+    // 當通過身分驗證
     next();
   }
   catch(error){
@@ -57,29 +49,30 @@ router.use(auth = function(request,response,next){
 
 
 // 商品
-router.get('/get', product.getProduct);
+router.get('/product', product.getProduct); //取得商品
 
-// 購物車
-router.get('/getCart'         , cart.getCart);
-router.post('/addToCart'      , cart.addCart);
-router.post('/removeFromCart' , cart.deleteCart);
+// 購物車 Restful API
+router.get('/cart'                , cart.getCart);    // 取得購物車
+router.post('/cart/:product_id'   , cart.addCart);    // 新增購物車商品
+router.delete('/cart/:product_id' , cart.deleteCart); // 移除購物車商品
 
 // 用戶
-router.get('/getUser'   , user.getUserInfo);
-router.post('/register' , user.register);
-router.post('/login'    , user.login);
-router.post('/logout'   , user.logout);
-router.get('/isLogin'   , user.isLogin);
+router.get('/user'      , user.getUserInfo);  // 取得用戶資訊
+router.post('/register' , user.register);     // 新增用戶
 
-// 訂單
-router.post('/addOrder' , transaction.addTransaction);
-router.get('/getOrder'  , transaction.getTransaction);
+// 用戶 - Session
+router.post('/login'    , user.login);  // 建立Session
+router.post('/logout'   , user.logout); // 移除Session
+router.get('/isLogin'   , user.isLogin);// 取得Session
+
+// 交易紀錄 Restful API
+router.get('/transaction'  , transaction.getTransaction);  // 取得交易紀錄
+router.post('/transaction' , transaction.addTransaction);  // 新增交易紀錄
 
 
 /* GET index listing. */
 router.get('/', function(req, res, next) {
-  console.log('API')
-  res.send('API')
+  res.send('API router')
 });
 
 

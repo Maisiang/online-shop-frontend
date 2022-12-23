@@ -48,7 +48,7 @@ export default{
         switchTab(path){
             // 判斷路徑是否同一個
             if(this.$route.path === path) return;
-            this.$router.replace(path);
+            this.$router.push(path);
         }
     }
 }

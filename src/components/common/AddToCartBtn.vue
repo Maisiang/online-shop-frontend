@@ -11,9 +11,8 @@ export default{
     methods:{
         // 新增商品到購物車
         addToCart(item){
-            axios.post('/api/addToCart',{
-                product_id: item._id,
-            }).then((response)=>{
+            axios.post('/api/cart/' + item._id)
+            .then((response)=>{
                 alert(item.name+"\n"+response.data.message);
             })
         }

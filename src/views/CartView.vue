@@ -36,7 +36,6 @@ export default {
   name: "CartView",
   data(){
     return{
-      userInfo:{},
       productList:[],
       total:0,
       isCartEmpty:true
@@ -45,7 +44,7 @@ export default {
   methods:{
     // 取得用戶的購物車所有商品
     getCart(){
-      axios.get('/api/getCart').then((response)=>{
+      axios.get('/api/cart').then((response)=>{
         // 將購物車內容複製到productList
         this.productList = response.data;
         // 購物車設定數量都為1個
@@ -64,11 +63,9 @@ export default {
       })
     },
     deleteProduct(item){
-      axios.post('/api/removeFromCart',{
-                product_id: item._id,
-            }).then((response)=>{
-                alert(response.data.message+"\n"+item.name);
-                this.getCart();
+      axios.delete('/api/cart/' + item._id).then((response)=>{
+          alert(response.data.message+"\n"+item.name);
+          this.getCart();
       })
     },
     // 透過 +和-按鈕控制數量
@@ -111,7 +108,6 @@ export default {
     }
   },
   mounted(){
-      this.userInfo = JSON.parse(sessionStorage.getItem('user-info'));
       this.getCart();
   },
   components:{

@@ -8,7 +8,7 @@ const { ObjectId } = require('mongodb');
 exports.getTransaction = async(request,response)=>{
     console.log('查詢交易紀錄 ',request.session.user.username)
     // 搜尋該用戶所有交易紀錄
-    let query = await transaction.find({username: request.session.user.username});
+    let query = await transaction.find({username: request.session.user.username}).sort({orderDate:-1});
     response.json(query);
 }
 

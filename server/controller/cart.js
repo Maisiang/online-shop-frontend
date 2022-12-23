@@ -19,31 +19,26 @@ exports.getCart = async(request,response)=>{
 
 // 新增商品
 exports.addCart = async(request,response)=>{
-    console.log('添加商品到購物車',request.body)
+    console.log('添加商品到購物車',request.params);
     await cart.updateOne(
         { username:request.session.user.username },
-        { $addToSet: {product_id: ObjectId(request.body.product_id)} }
+        { $addToSet: {product_id: ObjectId(request.params.product_id)} }
     );
     console.log('購物車新增成功！');
     response.send({
       message:'已將商品加到購物車！'
     });
 }
+
 // 移除商品
 exports.deleteCart = async(request,response)=>{
-    console.log('移除購物車商品：',request.body)
+    console.log('移除購物車商品：',request.params)
     await cart.updateOne(
         { username:request.session.user.username },
-        { $pull    :{product_id: ObjectId(request.body.product_id)} }
+        { $pull    :{product_id: ObjectId(request.params.product_id)} }
     );
     console.log('購物車刪除商品成功！');
     response.send({
       message:'已將商品從購物車移除！'
     });
-    /*
-          console.log('購物車刪除商品失敗...');
-      response.send({
-        message:'購物車刪除商品失敗...'
-      });   
-      */
 }

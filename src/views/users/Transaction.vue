@@ -17,7 +17,7 @@ export default{
     methods:{
         // 取得交易紀錄
         getOrder(){
-            axios.get('/api/getOrder').then((response)=>{
+            axios.get('/api/transaction').then((response)=>{
                 this.orderList = [...response.data]
             })
 

@@ -3,6 +3,8 @@
     <div class="user-menu col center-center">
       
       <div class="user-avater row center-center">
+        <img v-if="!loading" :src="require('@/assets/images/photo/unknown.jpg')" />
+        <h1  v-if="!loading" class="h1">未登入</h1>
         <img v-if="loading" :src="require('@/assets/images/photo/'+ userInfo.avatar)" />
         <h1 class="h1">{{userInfo.username}}</h1>
       </div>
@@ -69,25 +71,18 @@ export default{
           this.$router.push('/');
       })
     },
-    getUser(){
-      axios.get('/api/getUser').then((response)=>{
+    getUserInfo(){
+      axios.get('/api/user').then((response)=>{
         if(response.data.isLogin === true){
           this.userInfo = Object.assign({}, response.data);
           /* 避免載入未知資源 */
           this.loading = true;
         }
-        else{
-          alert('登入已失效，請重新登入！')
-          // 移除session
-          sessionStorage.removeItem('user-info');
-          this.loading = false;
-          this.$router.replace('/login');
-        }
       })
     }
   },
   mounted(){
-      this.getUser();
+      this.getUserInfo();
   },
 };
 </script>
