@@ -5,7 +5,7 @@
         @keyup.enter="goSearchList">
             <input type="text" class="search-input" placeholder="輸入你想找的商品..." v-model="searchVal">
         </form>
-        <h2 class="h2 search-btn noselect" @click="goSearchList">搜尋</h2>
+        <button class="h2 search-btn noselect" @click="goSearchList">搜尋</button>
     </header>
 </template>
 
@@ -38,8 +38,9 @@ export default{
             let newArr = new Set(this.searchArr);
             // 存放到 local storage (set轉array)
             localStorage.setItem('searchList',JSON.stringify(Array.from(newArr)));
-            // 路由到搜索頁
+            // 如果是重複的搜索
             if(this.$route.query.key === this.searchVal) return;
+            // 路由到搜索頁
             this.$router.push({
                 name:'search-list',
                 query:{
@@ -47,7 +48,6 @@ export default{
                 }
             });
             this.searchArr.length = 0;
-            // this.$router.push({name:'list'});
         },
     },
 }
@@ -79,6 +79,7 @@ export default{
     border: 3px rgb(20, 122, 189) solid;
 }
 .search-btn{
+    background: none;
     padding: 5px;
     border: 2px white solid;
     color: white;

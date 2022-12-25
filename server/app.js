@@ -7,10 +7,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-// for parsing multipart/form-data
+// 解析 multipart/form-data
 let multer = require('multer');
 let upload = multer();
 app.use(upload.array());
@@ -21,6 +18,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 所有路由
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 app.use('/api', indexRouter);
 app.use('/users', usersRouter);
 

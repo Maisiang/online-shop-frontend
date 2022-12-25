@@ -1,28 +1,41 @@
 <template>
     <div class="order col center-center">
       <h1 class="h1">訂單資料</h1>
-      <form class="order-info row flex-wrap">
+      <form class="order-info row flex-wrap" @submit.prevent="sendOrder">
+
         <label>電子信箱</label>
-        <input type="email" v-model="orderInfo.email">
+        <input type="email" v-model="orderInfo.email"
+                  required />
+
         <div>
           <label>姓名</label>
-          <input type="text" v-model="orderInfo.name">
+          <input type="text" v-model="orderInfo.name"
+                  minlength="3" maxlength="3" required />
         </div>
+
         <div>
           <label>電話號碼</label>
-          <input type="text" v-model="orderInfo.phoneNum">
+          <input type="text" v-model="orderInfo.phoneNum"
+          pattern="^\d{10}$" maxlength="10" required />
         </div>
+
         <label>收件地址</label>
-        <input type="text" v-model="orderInfo.address">
+        <input type="text" v-model="orderInfo.address"
+                maxlength="50" required />
+
         <label>備註</label>
-        <input type="text" v-model="orderInfo.note">
+        <input type="text" v-model="orderInfo.note"
+                maxlength="50"  />
+        <div class="total row space-between-center">
+          <p class="h2">購物車總計</p>
+          <p class="h2 c-red">${{total}}</p>
+        </div>
+
+        <input type="submit" class="send-order-btn" value="送出訂單">
       </form>
 
-      <div class="total row space-between-center">
-        <p class="h2">購物車總計</p>
-        <p class="h2 c-red">${{total}}</p>
-      </div>
-      <button class="send-order-btn" @click="sendOrder">送出訂單</button>
+
+
     </div>
 </template>
 
@@ -43,7 +56,10 @@ export default{
     },
     methods:{
         sendOrder(){
-            console.log();
+            if(this.productList.length===0){
+              alert('購物車無商品...');
+              return false;
+            }
             axios.post('/api/transaction',{
                 orderInfo:      this.orderInfo,
                 productList:    this.productList,
@@ -80,11 +96,12 @@ export default{
   width: 100%;
 }
 .total{
+  min-width: 100%;
   font-weight: bold;
   padding-top: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
-  width: 100%;
+
 }
 .send-order-btn{
   border-color: rgb(255, 105, 105);

@@ -1,6 +1,6 @@
 <template>
   <div class="search-list">
-      <Sort class="search-sort-bar" v-if="!showNotFound" v-on:getDataFromChild="getDataFromChild" :queryKey="queryKey"></Sort>
+      <Sort class="search-sort-bar" v-show="!showNotFound" v-on:getDataFromChild="getDataFromChild" :queryKey="queryKey"></Sort>
 
       <div v-if="showNotFound" class="col center-center">
           <h2 class="h2 m-t-l">沒有找到與  {{this.$route.query.key}} 相關的商品</h2>
@@ -51,7 +51,6 @@ export default {
 </script>
 
 <style scoped>
-
 .search-product-list{
   width: 90%;
   margin: 0 auto;

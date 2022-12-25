@@ -13,9 +13,13 @@ async function isLogin(from){
       }
       // 未登入
       else{
-        if(from.path==='/login') alert('請先登入會員！')
+        if(from.path==='/login'){
+          alert('請先登入會員！');
+          router.replace('/login');
+
+        }
         // 使用replace避免循環重定向
-        router.replace('/login');
+        else router.push('/login');
         return false;
       }
     })
@@ -27,20 +31,23 @@ async function isLogin(from){
 }
 
 const routes = [
+  // 首頁
   {
-    path: "/",
+    path: "/home",
     name: "home",
     component: HomeView,
   },
   {
-    path: "/home",
-    redirect : '/',
+    path: "/",
+    redirect : '/home',
   },
+  // 商品頁
   {
     path: "/products",
     name: "products",
     component: () => import("../views/ProductView.vue"),
   },
+  // 購物車 - 需要驗證
   {
     path: "/cart",
     name: "cart",
@@ -50,6 +57,7 @@ const routes = [
     },
     component: () => import("../views/CartView.vue"),
   },
+  // 用戶 - 需要驗證
   {
     path: "/users",
     name: "Users",
@@ -93,6 +101,12 @@ const routes = [
     name: "login",
     component: () => import("../views/LoginView.vue"),
   },
+  {
+    path: "/chat",
+    name: "chat",
+    component: () => import("../views/ChatView.vue"),
+  },
+
 ];
 
 const router = createRouter({

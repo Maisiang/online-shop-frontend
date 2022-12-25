@@ -1,0 +1,63 @@
+#!/usr/bin/env node
+
+// WebSocket Server
+
+/**
+ * Module dependencies.
+ */
+const WebSocket = require('ws');
+const server = require('../www');
+
+/**
+ * Create WebSocket server.
+ */
+
+const wss = new WebSocket.Server({server});
+// 處理 WebSocket 連接
+wss.on('connection', function connection(client) {
+    console.log('\nClient連接！ 聊天室人數： ', wss.clients.size);
+    wss.clients.forEach(client => {
+      client.send('聊天室人數： '+wss.clients.size)
+    })
+    // 註冊'message'事件
+    client.on('message', (data)=> incoming(client,data));
+    // 註冊'close'事件
+    client.on('close', () => clientClose());
+});
+server.on('upgrade', function (request, socket, head) {
+  console.log('升級協議')
+})
+
+// 處理 WebSocket 伺服器錯誤
+wss.on('error', function error(error) {
+  console.log('WebSocket Server Error： ',error);
+});
+// 處理 WebSocket 伺服器關閉
+wss.on('close', function close() {
+  console.log('WebSocket Server關閉！');
+});
+
+/**
+ * HTTP server function
+ */
+// 當接收到資料
+function incoming(client,data) {
+  if (data instanceof Buffer){
+    console.log('接收到二進制資料');
+  } 
+  else{
+    const message = data.toString();
+    // 發送至每個 client
+    wss.clients.forEach(client => {
+        client.send(data)
+    })
+    console.log(`文字： ${message}`);
+  }
+}
+// 當用戶離開
+function clientClose(){
+  console.log('Client離開！ 聊天室人數： ',wss.clients.size);
+  wss.clients.forEach(client => {
+    client.send('有用戶離開！ 聊天室人數： '+wss.clients.size)
+  })
+}

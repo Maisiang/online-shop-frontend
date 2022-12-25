@@ -67,8 +67,7 @@ export default{
         // 清除sessionStorage
         sessionStorage.removeItem('user-info');
         // 切換路由到首頁
-        if(response.data.isLogout)
-          this.$router.push('/');
+        this.$router.push('/');
       })
     },
     getUserInfo(){

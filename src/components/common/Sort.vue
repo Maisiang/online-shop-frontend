@@ -23,6 +23,7 @@ export default{
     props:['queryKey'],
     data(){
         return{
+            mode:0,
             resObj:{},
             sortList:{
                 currentIndex: 0,
@@ -38,8 +39,15 @@ export default{
         this.getData();
     },
     methods:{
-        // 搜尋商品功能 - 預設為綜合(0)
+        // 搜尋商品功能 - 預設為綜合(0)、遞增(1)、遞減(-1)
+        // mode 預設為 採用this.queryKey(0)、透過路由變化的query(1)
         async getData(index = 0){
+            let nameQuery = this.queryKey
+            if(this.mode===1){
+                if(this.$route.query.key===undefined)
+                    return false;
+                nameQuery = this.$route.query.key;
+            }
             let oldIndex = this.sortList.currentIndex
             // 儲存選取的排序索引
             this.sortList.currentIndex = index;
@@ -51,7 +59,7 @@ export default{
             axios.get('/api/product',{
                 // 傳遞給伺服器的搜尋字串
                 params:{
-                    name: this.queryKey,
+                    name: nameQuery,
                     sortStr: this.sortList.data[index].sortStr,
                     sortNum: this.sortList.data[index].sortNum*-1,
                 }
@@ -64,7 +72,9 @@ export default{
     },
     watch:{
         // 監聽路由(搜尋參數)改變，重新抓取資料
-        $route(){
+        $route(){},
+        '$route.query.key': function (newValue, oldValue) {
+            this.mode=1;
             this.getData();
         }
     },
@@ -76,7 +86,8 @@ export default{
     height: 10px;
 }
 .sort-bar{
-    width: 100%;
+    width:100%;
+    box-sizing: border-box;
     padding: 10px;
 }
 </style>

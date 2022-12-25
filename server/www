@@ -1,14 +1,13 @@
-#!/usr/bin/env node
+// HTTP Server
 
 /**
  * Module dependencies.
  */
 
-var app = require('../app');
+var app = require('./app');
 var debug = require('debug')('server:server');
 var http = require('http');
-
-//http.globalAgent = new http.Agent({ keepAlive:true });
+// http.globalAgent = new http.Agent({ keepAlive:true });
 
 /**
  * Get port from environment and store in Express.
@@ -21,20 +20,17 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
+const server = http.createServer(app);
+server.listen(port,()=>{
+  console.log('HTTP Server Listen on port：',port, ', on all network interfaces');
+});
 server.on('error', onError);
 server.on('listening', onListening);
 
 /**
- * Normalize a port into a number, string, or false.
+ * HTTP server function
  */
-
+// Normalize a port into a number, string, or false.
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
@@ -50,11 +46,7 @@ function normalizePort(val) {
 
   return false;
 }
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
+// Event listener for HTTP server "error" event.
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
@@ -78,11 +70,7 @@ function onError(error) {
       throw error;
   }
 }
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
+// Event listener for HTTP server "listening" event.
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string'
@@ -91,9 +79,8 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-
 /**
- * error handler
+ * Error handler
  */
 process.on('uncaughtException', function(err) {
   console.log('同步：',err);
@@ -105,3 +92,8 @@ process.on('unhandledRejection', function(err) {
   console.log('非同步',err);
   process.exit(1)
 })
+
+
+module.exports = server;
+
+

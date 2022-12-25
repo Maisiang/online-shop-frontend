@@ -142,10 +142,12 @@ export default{
 .content{
   min-height: 70vh;
   height: auto;
+  gap: 70px 0;
+  margin-bottom:140px;
 }
 .content form{
   color:rgb(50, 150, 255);
-  margin-top: 40px;
+  margin-top: 20px;
   padding: 50px;
   background-color: #f5f5f5;
   box-shadow: 10px 10px 25px rgba(0,0,0,.5);
