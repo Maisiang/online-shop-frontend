@@ -2,6 +2,7 @@
 var express = require('express');
 var app = express();
 
+// 引入相關模組
 var createError = require('http-errors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -12,6 +13,23 @@ let multer = require('multer');
 let upload = multer();
 app.use(upload.array());
 
+// express-ws 中間件 待刪除
+var expressWs = require('express-ws');
+expressWs(app);
+
+// 配置session
+const session = require('express-session')
+const sessionParser = session({
+  secret: 'DoveSecret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    sameSite: 'strict',
+  }
+})
+app.use(sessionParser);
+
+// 其餘配置
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -43,4 +61,7 @@ app.use(function(err, req, res, next) {
 });
 
 
-module.exports = app;
+module.exports = {
+  app,
+  sessionParser
+};

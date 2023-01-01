@@ -1,24 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
-// 配置sessionn
-const session = require('express-session')
-router.use(session({
-  secret: 'DoveSecret',
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    sameSite: 'strict',
-  }
-}))
-
 // 所有路由
 const user = require('../controller/user');
 const cart = require('../controller/cart');
 const product = require('../controller/product');
 const transaction = require('../controller/transaction');
 
-// 作用為http請求完成、關閉或錯誤後觸發用戶設置的回調函數
 
 // 路由級別中間件 - 處理身分驗證 
 router.use(auth = function(request,response,next){
@@ -46,6 +34,7 @@ router.use(auth = function(request,response,next){
     console.log("錯誤："+ error.message);
   }
 });
+
 
 
 // 商品

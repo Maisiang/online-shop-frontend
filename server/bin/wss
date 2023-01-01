@@ -1,32 +1,62 @@
-#!/usr/bin/env node
-
 // WebSocket Server
 
 /**
  * Module dependencies.
  */
+
+
 const WebSocket = require('ws');
-const server = require('../www');
+const chat = require('../controller/chat');
 
 /**
  * Create WebSocket server.
  */
 
-const wss = new WebSocket.Server({server});
+const wss = new WebSocket.Server({noServer: true})
 // 處理 WebSocket 連接
-wss.on('connection', function connection(client) {
-    console.log('\nClient連接！ 聊天室人數： ', wss.clients.size);
-    wss.clients.forEach(client => {
-      client.send('聊天室人數： '+wss.clients.size)
-    })
-    // 註冊'message'事件
-    client.on('message', (data)=> incoming(client,data));
-    // 註冊'close'事件
-    client.on('close', () => clientClose());
+wss.on('connection', async function connection(ws,session){
+  newConnect(ws,session);
+  console.log( ws.username,'連接！ 聊天室人數： ', wss.clients.size);
+  let sendData;
+
+  // 傳送身分給新用戶
+  sendData = {
+    status: 2,
+    username: ws.username
+  }
+  ws.send(JSON.stringify(sendData));
+  
+  // 傳送舊聊天紀錄給新用戶
+  let query = await chat.getChat()
+  for(let i=query.length-1 ; i>=0 ; i--){
+    ws.send(JSON.stringify(query[i]));
+  }
+  // 傳送目前在線用戶給新用戶
+  wss.clients.forEach(client => {
+    sendData = {
+      status: 0,
+      username:client.username,
+      message:'歡迎光臨'
+    }
+    ws.send(JSON.stringify(sendData));
+  })
+
+  // 傳送加入訊息給所有人
+  sendData = {
+    status:0,
+    username: ws.username,
+    message: ws.username+'進入聊天室！',
+  }
+  wss.clients.forEach(client => {
+    client.send(JSON.stringify(sendData));
+  })
+
+  // 註冊'message'事件
+  ws.on('message', (data)=> incoming(ws,data));
+  // 註冊'close'事件
+  ws.on('close', () => clientClose(ws));
 });
-server.on('upgrade', function (request, socket, head) {
-  console.log('升級協議')
-})
+
 
 // 處理 WebSocket 伺服器錯誤
 wss.on('error', function error(error) {
@@ -38,26 +68,55 @@ wss.on('close', function close() {
 });
 
 /**
- * HTTP server function
+ * WebSocket Server Function
  */
+
 // 當接收到資料
-function incoming(client,data) {
+function incoming(ws,data) {
   if (data instanceof Buffer){
     console.log('接收到二進制資料');
   } 
   else{
-    const message = data.toString();
+    const taipeiDate = new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
+    let sendData = {
+      status  : 1,
+      message : data.toString(),
+      username: ws.username,
+      avatar  : ws.avatar,
+      date    : taipeiDate
+    }
+    chat.addChat(sendData);
     // 發送至每個 client
     wss.clients.forEach(client => {
-        client.send(data)
+        client.send(JSON.stringify(sendData));
     })
-    console.log(`文字： ${message}`);
+    console.log(ws.username,'： ',data.toString());
   }
 }
+
 // 當用戶離開
-function clientClose(){
-  console.log('Client離開！ 聊天室人數： ',wss.clients.size);
+function clientClose(ws){
+  console.log( ws.username,'離開！ 聊天室人數： ',wss.clients.size);
+  let sendData = {
+    status:-1,
+    username:ws.username,
+    message: ws.username+'離開聊天室！',
+  }
   wss.clients.forEach(client => {
-    client.send('有用戶離開！ 聊天室人數： '+wss.clients.size)
+    client.send(JSON.stringify(sendData));
   })
 }
+
+// 當用戶連線
+let num = 0;
+function newConnect(ws,session){
+  ws.username = '訪客'+ num++;
+  ws.avatar = 'unknown.jpg';
+  if(session.user!=undefined){
+    ws.username = session.user.username;
+    ws.avatar = session.user.avatar;
+    num--;
+  }
+}
+
+module.exports = wss;

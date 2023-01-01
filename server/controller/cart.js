@@ -1,4 +1,3 @@
-//const mongoose = require('mongoose');
 const cart = require('../models/cart');
 const product = require('../models/product');
 const { ObjectId } = require('mongodb');

@@ -16,10 +16,7 @@ img{
     width: auto;
     height: auto;
 }
-#app,html, body {
-    min-height: 100% !important;
-    height: auto;
-}
+
 .h-full{
     height: 100%;
 }
@@ -69,6 +66,12 @@ img{
 .align-center{
     align-items: center;
 }
+.align-start{
+    align-items: flex-start;
+}
+.align-end{
+    align-items: flex-end;
+}
 .justify-center{
     justify-content: center;
 }
@@ -112,6 +115,9 @@ img{
 }
 .flex-wrap{
     flex-wrap: wrap;
+}
+.flex-row-reverse{
+    flex-direction: row-reverse;
 }
 .cursor-ptr{
     cursor: pointer;

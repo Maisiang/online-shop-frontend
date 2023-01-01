@@ -134,20 +134,16 @@ export default{
 
 <style scoped>
 .type-rule{
-    margin-top: 70px;
     padding: 10px;
-    /*border:5px rgb(50, 150, 255) dashed;*/
     width: 80%;
 }
 .content{
   min-height: 70vh;
   height: auto;
   gap: 70px 0;
-  margin-bottom:140px;
 }
 .content form{
   color:rgb(50, 150, 255);
-  margin-top: 20px;
   padding: 50px;
   background-color: #f5f5f5;
   box-shadow: 10px 10px 25px rgba(0,0,0,.5);
