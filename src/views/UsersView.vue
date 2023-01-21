@@ -1,24 +1,25 @@
 <template>
   <div class="user">
-    <div class="user-menu col center-center">
-      
-      <div class="user-avater row center-center">
-        <img v-if="!loading" :src="require('@/assets/images/photo/unknown.jpg')" />
-        <h1  v-if="!loading" class="h1">未登入</h1>
-        <img v-if="loading" :src="require('@/assets/images/photo/'+ userInfo.avatar)" />
+    <div class="user-menu  flex-col">
+
+      <div v-if="loading" class="user-avater  flex-row  justify-content-center  align-items-center">
+        <img :src="userInfo.avatar"/>
         <h1 class="h1">{{userInfo.username}}</h1>
       </div>
+      <div v-if="!loading" class="user-avater  flex-row  justify-content-center  align-items-center">
+        <img :src="require('@/assets/images/photo/unknown.jpg')"/>
+        <h1 class="h1">未登入</h1>
+      </div>
 
-      <ul class="user-menu-list row flex-wrap center-center">
-        <li @click="activeMenu(item.name , index)" v-for="(item,index) in menuList.data" :key="index"
-        :class='index===menuList.currentIndex?"active-menu-btn noselect":"not-active-menu-btn noselect"'>
-          <div class="row center-center">
+      <ul class="user-menu-list  flex-row  flex-wrap  justify-content-center">
+        <li v-for="(item,index) in menuList.data" :key="index" @click="activeMenu(index)"
+        class="noselect  flex-row  justify-content-center" 
+        :class='index===menuList.currentIndex?"active-menu-btn":"not-active-menu-btn"'>
             {{item.name}}
-          </div>
         </li>
       </ul>
     </div>
-    <div class="user-content col">
+    <div class="user-content flex-col">
       <router-view v-bind:userInfo="userInfo"></router-view>
     </div>
 
@@ -26,7 +27,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { apiUserLogout, apiUserInfo } from "@/assets/scripts/api"; 
 export default{
   name: "UsersView",
   data(){
@@ -34,10 +35,22 @@ export default{
       menuList:{
         currentIndex:0,
         data:[
-          {name:'個人檔案'},
-          {name:'更改密碼'},
-          {name:'交易紀錄'},
-          {name:'會員登出'}
+          {
+            name: '個人檔案',
+            path: '/users'
+          },
+          {
+            name: '更改密碼',
+            path: '/users/updatepwd'
+          },
+          {
+            name: '交易紀錄',
+            path: '/users/transaction'
+          },
+          {
+            name: '會員登出',
+            path: '/logout'
+          }
         ]
       },
       userInfo:{},
@@ -45,33 +58,29 @@ export default{
     }
   },
   methods:{
-    activeMenu(menuName, index){
+    // 當點擊選單按鈕，切換頁面
+    activeMenu(index){
+      // 儲存目前為哪個頁面
       this.menuList.currentIndex = index;
-      if(menuName==='會員登出')
-        this.goLogout();
-      else if(menuName==='個人檔案'){
-        if(this.$route.path === '/users') return;
-        this.$router.push('/users');
+      // 將路徑push到路由
+      if(this.menuList.data[index].path==='/logout') this.logout();
+      else{
+        if(this.$route.path === this.menuList.data[index].path) return;
+        this.$router.push(this.menuList.data[index].path);
       }
-      else if(menuName==='交易紀錄'){
-        if(this.$route.path === '/users/transaction') return;
-        this.$router.push({name:'transaction'});
-      }
-      else
-        alert(menuName);
     },
-    goLogout(){
-      axios.post('/api/logout')
-      .then((response)=>{
+    // 用戶登出
+    logout(){
+      apiUserLogout().then((response)=>{
         alert(response.data.message);
-        // 清除sessionStorage
+        // 清除sessionStorage並切換到首頁
         sessionStorage.removeItem('user-info');
-        // 切換路由到首頁
         this.$router.push('/');
       })
     },
+    // 取得用戶資訊
     getUserInfo(){
-      axios.get('/api/user').then((response)=>{
+      apiUserInfo().then((response)=>{
         if(response.data.isLogin === true){
           this.userInfo = Object.assign({}, response.data);
           /* 避免載入未知資源 */
@@ -81,7 +90,7 @@ export default{
     }
   },
   mounted(){
-      this.getUserInfo();
+    this.getUserInfo();
   },
 };
 </script>
@@ -92,18 +101,16 @@ export default{
   background-color: #d8d8d8;
   gap:30px 0;
   padding: 30px;
-  margin-bottom: 30px;
 }
 .user-menu img{
   width: 30%;
   border-radius: 50%;
-  border:3px rgb(54, 159, 228) dashed;
+  border:3px rgb(50, 150, 230) dashed;
 }
 .user-avater{
   gap: 20px;
 }
 .user-menu-list{
-  width: 100%;
   gap: 30px 10%;
 }
 .user-menu-list li{
@@ -112,7 +119,6 @@ export default{
 }
 .user-content{
   padding: 20px;
-  gap: 20px;
 }
 
 @media (min-width:768px){
@@ -120,12 +126,12 @@ export default{
       display: flex;
     }
     .user-menu{
-      width: 20%;
       background-color: white;
-      justify-content: flex-start;
+      width: 20%;
     }
-    .user-menu .user-menu-list{
-      flex-direction: column;    
+    .user-menu-list li{
+      width: 100%;
+      line-height: 40px;
     }
     .user-menu .user-avater{
       flex-direction: column;
@@ -134,15 +140,9 @@ export default{
       width: 70%;
     }
     .user-content{
+      margin-top: 35px;
       width: 65%;
-      min-height: 65vh;
-      height: auto;
-      margin-top: 40px;
-      background-color: #d8d8d8;
     }
-    .user-menu-list li{
-      width: 100%;
-      line-height: 40px;
-    }
+
 }
 </style>

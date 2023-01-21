@@ -1,46 +1,38 @@
 <template>
-    <div class="order col center-center">
+    <div class="order flex-col align-items-center">
       <h1 class="h1">訂單資料</h1>
-      <form class="order-info row flex-wrap" @submit.prevent="sendOrder">
+      <form class="order-form flex-row flex-wrap" @submit.prevent="sendOrder">
 
         <label>電子信箱</label>
-        <input type="email" v-model="orderInfo.email"
-                  required />
+        <input type="email" v-model="orderInfo.email" required />
 
         <div>
           <label>姓名</label>
-          <input type="text" v-model="orderInfo.name"
-                  minlength="3" maxlength="3" required />
+          <input type="text" v-model="orderInfo.name" maxlength="10" required />
         </div>
 
         <div>
           <label>電話號碼</label>
-          <input type="text" v-model="orderInfo.phoneNum"
-          pattern="^\d{10}$" maxlength="10" required />
+          <input type="text" v-model="orderInfo.phoneNum" pattern="^\d{10}$" maxlength="10" required />
         </div>
 
         <label>收件地址</label>
-        <input type="text" v-model="orderInfo.address"
-                maxlength="50" required />
+        <input type="text" v-model="orderInfo.address" maxlength="50" required />
 
         <label>備註</label>
-        <input type="text" v-model="orderInfo.note"
-                maxlength="50"  />
-        <div class="total row space-between-center">
+        <input type="text" v-model="orderInfo.note" maxlength="50" />
+        <div class="total flex-row justify-content-between">
           <p class="h2">購物車總計</p>
-          <p class="h2 c-red">${{total}}</p>
+          <p class="h2 text-red">${{total}}</p>
         </div>
-
         <input type="submit" class="send-order-btn" value="送出訂單">
+        
       </form>
-
-
-
     </div>
 </template>
 
 <script>
-import axios from 'axios';
+import { apiTransactionAdd } from "@/assets/scripts/api";
 export default{
     props:['total','productList'],
     data(){
@@ -60,9 +52,9 @@ export default{
               alert('購物車無商品...');
               return false;
             }
-            axios.post('/api/transaction',{
-                orderInfo:      this.orderInfo,
-                productList:    this.productList,
+            apiTransactionAdd({
+              orderInfo:      this.orderInfo,
+              productList:    this.productList,
             }).then((response)=>{
                 alert(response.data.message);
                 this.$router.replace({path: '/users/transaction'});
@@ -81,17 +73,17 @@ export default{
   padding: 20px;
   margin-top:30px;
 }
-.order-info{
+.order-form{
   margin-top: 20px;
   gap: 10px 8%;
 }
-.order-info >input{
+.order-form >input{
   width: 100%;
 }
-.order-info div{
+.order-form div{
   width:45%;
 }
-.order-info div input{
+.order-form div input{
   margin-top: 10px;
   width: 100%;
 }

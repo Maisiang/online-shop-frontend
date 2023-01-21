@@ -7,7 +7,7 @@
 
 <script>
 import Swiper from '@/components/users/Swiper.vue';
-import axios from 'axios';
+import { apiTransaction } from "@/assets/scripts/api";
 export default{
     data(){
         return{
@@ -17,10 +17,9 @@ export default{
     methods:{
         // 取得交易紀錄
         getOrder(){
-            axios.get('/api/transaction').then((response)=>{
+            apiTransaction().then((response)=>{
                 this.orderList = [...response.data]
             })
-
         }
     },
     mounted(){
@@ -31,7 +30,3 @@ export default{
     }
 }
 </script>
-
-<style>
-
-</style>

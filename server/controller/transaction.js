@@ -25,12 +25,13 @@ exports.addTransaction = async(request,response)=>{
         total = total + query[0].price * request.body.productList[i].num;
     }
     // 插入訂單資訊到資料庫
+    const taipeiDate = new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
     let insertTransaction = new transaction({
         username    : request.session.user.username,
         orderInfo   : request.body.orderInfo,
         productList : request.body.productList,
         total       : total,
-        orderDate   : Date(),
+        orderDate   : taipeiDate,
         status      : "pending"
     })
     await insertTransaction.save((error,results)=>{

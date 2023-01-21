@@ -26,8 +26,8 @@ export default{
                 {
                     title:'所有商品',
                     path:'/products',
-                    active:require('../../assets/images/list.png'),
-                    selected:require('../../assets/images/list-selected.png'),
+                    active:require('../../assets/images/products.png'),
+                    selected:require('../../assets/images/products-selected.png'),
                 },
                 {
                     title:'購物車',

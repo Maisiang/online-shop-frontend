@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import axios from "axios";
 
+import { apiUserisLogin } from "@/assets/scripts/api";
 
 async function isLogin(from){
   // 如果沒有session，需要跟Server請求 (可能新開個分頁而沒有)
   if(!sessionStorage.getItem('user-info')){
-    await axios.get('/api/isLogin').then((response)=>{
+    await apiUserisLogin().then((response)=>{
       // 確認為登入狀態
       if(response.data.isLogin===true){
         sessionStorage.setItem('user-info',JSON.stringify(response.data.userInfo));
@@ -15,10 +15,9 @@ async function isLogin(from){
       else{
         if(from.path==='/login'){
           alert('請先登入會員！');
+          // 使用replace避免循環重定向
           router.replace('/login');
-
         }
-        // 使用replace避免循環重定向
         else router.push('/login');
         return false;
       }
@@ -71,6 +70,11 @@ const routes = [
         path:"transaction",
         name:"transaction",
         component: () => import("../views/users/Transaction.vue"),
+      },
+      {
+        path:"updatepwd",
+        name:"updatepwd",
+        component: () => import("../views/users/UpdatePwd.vue"),
       },
     ],
     // 導航守衛 Navigation guard

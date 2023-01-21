@@ -1,16 +1,16 @@
 <template>
-    <div class="sort-bar">
-        <ul class=" row space-around-center">
-          <li class='h2 row center-center noselect' v-for="(item,index) in sortList.data" :key="index">
-              <div :class='index===sortList.currentIndex?"c-red":""'
-              @click="getData(index)">
+    <div class="sort-bar w-full">
+        <ul class=" flex-row justify-content-around noselect">
+          <li class='h2 flex-row cursor-ptr' v-for="(item,index) in sortList.data" :key="index">
+              <div :class='index===sortList.currentIndex?"text-red":""' @click="getData(index)">
                   {{item.name}}
               </div>
-              <div v-if="item.sortStr!=='' & sortList.currentIndex===index" class="search-filter col">
+              <div v-if="item.sortStr!=='' & sortList.currentIndex===index" class="search-arrow flex-col">
                   <img v-if="item.sortNum!==-1" src="@/assets/images/up-arrow.png">
+                  <img v-if="item.sortNum!==-1" src="@/assets/images/down-arrow-click.png">
+
                   <img v-if="item.sortNum!==1" src="@/assets/images/up-arrow-click.png">
                   <img v-if="item.sortNum!==1" src="@/assets/images/down-arrow.png">
-                  <img v-if="item.sortNum!==-1" src="@/assets/images/down-arrow-click.png">
               </div>
           </li>
       </ul>
@@ -18,13 +18,12 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { apiProduct } from '@/assets/scripts/api';
 export default{
     props:['queryKey'],
     data(){
         return{
             mode:0,
-            resObj:{},
             sortList:{
                 currentIndex: 0,
                 data:[
@@ -39,33 +38,34 @@ export default{
         this.getData();
     },
     methods:{
-        // 搜尋商品功能 - 預設為綜合(0)、遞增(1)、遞減(-1)
-        // mode 預設為 採用this.queryKey(0)、透過路由變化的query(1)
+        // index    - 預設為綜合(0)、遞增(1)、遞減(-1)
+        // mode     - 預設為 this.queryKey(0)、透過路由變化的query(1)
         async getData(index = 0){
-            let nameQuery = this.queryKey
+            // 父組件提供的Query
+            let nameQuery = this.queryKey;
+            // 如果是路由變化的Query
             if(this.mode===1){
                 if(this.$route.query.key===undefined)
                     return false;
                 nameQuery = this.$route.query.key;
             }
-            let oldIndex = this.sortList.currentIndex
             // 儲存選取的排序索引
+            let oldIndex = this.sortList.currentIndex
             this.sortList.currentIndex = index;
-            // 如果兩次為不同排序，則改為最原本的狀態
+            // 如果兩次為不同排序字串，則改為最原本的狀態
             if(oldIndex != this.sortList.currentIndex)
                 this.sortList.data[oldIndex].sortNum = 1;
-            // 變更排序(遞增,遞減)
+            // 變更排序(遞增、遞減)
             this.sortList.data[index].sortNum = this.sortList.data[index].sortNum * -1;
-            axios.get('/api/product',{
-                // 傳遞給伺服器的搜尋字串
+            // 傳遞給伺服器(搜尋商品名稱、按照哪個欄位排序、排序方法)
+            apiProduct({
                 params:{
                     name: nameQuery,
                     sortStr: this.sortList.data[index].sortStr,
                     sortNum: this.sortList.data[index].sortNum*-1,
                 }
-            // 接收搜尋結果
             }).then((response)=>{
-                // 傳response給Parent
+                // 傳送結果到父組件
                 this.$emit("getDataFromChild",Object.assign([],response.data));
             })
         },
@@ -82,12 +82,11 @@ export default{
 </script>
 
 <style scoped>
-.sort-bar .search-filter img{
+.sort-bar{
+    padding:10px;
+}
+.search-arrow img{
     height: 10px;
 }
-.sort-bar{
-    width:100%;
-    box-sizing: border-box;
-    padding: 10px;
-}
+
 </style>

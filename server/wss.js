@@ -4,51 +4,33 @@
  * Module dependencies.
  */
 
-
 const WebSocket = require('ws');
-const chat = require('../controller/chat');
+const chat = require('./controller/chat');
+
+/**
+ * Variable and Const
+ */
+
+let num = 0;
+let userList = [];
+const wss = new WebSocket.Server({noServer: true})
 
 /**
  * Create WebSocket server.
  */
 
-const wss = new WebSocket.Server({noServer: true})
 // 處理 WebSocket 連接
 wss.on('connection', async function connection(ws,session){
-  newConnect(ws,session);
-  console.log( ws.username,'連接！ 聊天室人數： ', wss.clients.size);
-  let sendData;
-
-  // 傳送身分給新用戶
-  sendData = {
-    status: 2,
-    username: ws.username
-  }
-  ws.send(JSON.stringify(sendData));
-  
-  // 傳送舊聊天紀錄給新用戶
-  let query = await chat.getChat()
-  for(let i=query.length-1 ; i>=0 ; i--){
-    ws.send(JSON.stringify(query[i]));
-  }
-  // 傳送目前在線用戶給新用戶
-  wss.clients.forEach(client => {
-    sendData = {
-      status: 0,
-      username:client.username,
-      message:'歡迎光臨'
-    }
-    ws.send(JSON.stringify(sendData));
-  })
+  // 有新用戶連線進來
+  await newConnect(ws,session);
 
   // 傳送加入訊息給所有人
-  sendData = {
-    status:0,
-    username: ws.username,
-    message: ws.username+'進入聊天室！',
-  }
   wss.clients.forEach(client => {
-    client.send(JSON.stringify(sendData));
+    client.send(JSON.stringify({
+      status:0,
+      username: ws.username,
+      message: ws.username+'進入聊天室！',
+    }));
   })
 
   // 註冊'message'事件
@@ -96,20 +78,20 @@ function incoming(ws,data) {
 
 // 當用戶離開
 function clientClose(ws){
-  console.log( ws.username,'離開！ 聊天室人數： ',wss.clients.size);
-  let sendData = {
-    status:-1,
-    username:ws.username,
-    message: ws.username+'離開聊天室！',
-  }
+  userList.splice(userList.indexOf(ws.username),1);
+  console.log('在線人數：'+userList.length,userList);
   wss.clients.forEach(client => {
-    client.send(JSON.stringify(sendData));
+    client.send(JSON.stringify({
+      status:-1,
+      username:ws.username,
+      message: ws.username+'離開聊天室！',
+    }));
   })
 }
 
 // 當用戶連線
-let num = 0;
-function newConnect(ws,session){
+async function newConnect(ws,session){
+  // 判斷用戶身分
   ws.username = '訪客'+ num++;
   ws.avatar = 'unknown.jpg';
   if(session.user!=undefined){
@@ -117,6 +99,19 @@ function newConnect(ws,session){
     ws.avatar = session.user.avatar;
     num--;
   }
+  // 新增到線上用戶列表
+  if(userList.indexOf(ws.username)===-1)
+    userList.push(ws.username);
+  console.log('在線人數：'+userList.length,userList);
+
+  let query = await chat.getChat()
+  // 傳送身分、在線用戶、聊天紀錄給新用戶
+  ws.send(JSON.stringify({
+    status: 2,
+    username: ws.username,
+    userList: userList,
+    query
+  }));
 }
 
 module.exports = wss;

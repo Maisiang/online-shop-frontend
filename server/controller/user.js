@@ -1,17 +1,26 @@
 const user = require('../models/user');
 const cart = require('../models/cart');
 
+const fs = require('fs');
+
 // 取得用戶資料
 exports.getUserInfo = async(request,response)=>{
     // 搜尋用戶名是否存在
     let query = await user.find({ username: request.session.user.username });
-    // 發送到客戶端
     console.log('取得用戶資訊：\n',query);
-    response.send({
-        isLogin : true,
-        username: query[0].username,
-        email   : query[0].email,
-        avatar  : query[0].avatar
+    // 頭像路徑
+    let filePath = './upload/' + request.session.user.username + '.jpg';
+    // 傳送檔案給用戶
+    fs.readFile(filePath, (error, file) => {
+        if (error) throw error;
+        // 發送到客戶端
+        response.send({
+            isLogin : true,
+            username: query[0].username,
+            email   : query[0].email,
+            avatar  : 'data:image/jpeg;base64,' + file.toString('base64'),
+            registrationDate: query[0].registrationDate
+        });
     });
 }
 
@@ -34,12 +43,14 @@ exports.register = async(request,response)=>{
     }
     // 不存在帳號，新增到資料庫
     else{
+        const date = new Date().toISOString().slice(0,10);
         // 在user集合新增帳號
         let addUser = new user({
             username: request.body.username,
             password: request.body.password,
             email   : request.body.email,
-            avatar  : 'pigeon1.jpg'
+            avatar  : 'pigeon1.jpg',
+            registrationDate: date
         })
         await addUser.save((error,results)=>{
             if(error) console.log(error);
@@ -62,6 +73,48 @@ exports.register = async(request,response)=>{
         });
     }
 }
+
+// 用戶更新密碼
+exports.updatePassword = async(request,response)=>{
+    console.log(request.session.user.username ,'用戶更新密碼\n',request.body.passwordList)
+    // 當舊密碼正確、新密碼兩次輸入一致
+    if((request.session.user.password === request.body.passwordList.oldPwd)&&
+       (request.body.passwordList.newPwd === request.body.passwordList.reNewPwd)){
+        await user.updateOne(
+            { username: request.session.user.username },
+            { $set: { password: request.body.passwordList.newPwd } }
+        );
+        response.send({
+            isLogin: true,
+            message:'密碼變更成功！'
+        });
+    }
+    else{
+        response.send({
+            isLogin: true,
+            message:'輸入的密碼有誤，請重新輸入...'
+        });
+    }
+}
+
+// 用戶更新頭像
+exports.updateAvatar = async(request,response)=>{
+    console.log(request.session.user.username,' 用戶更新頭像' , request.file);
+    // 更改檔案名稱
+    let filePath = './upload/' + request.session.user.username + '.jpg';
+    fs.renameSync(request.file.path, filePath)
+    // 更新資料庫的avatar
+    await user.updateOne(
+        { username: request.session.user.username },
+        { $set: { avatar: request.session.user.username+'.jpg' } }
+    );
+    response.send({
+        message:'頭像更新成功'
+    })
+}
+
+
+/* Session */
 
 // 用戶登入
 exports.login = async(request,response)=>{

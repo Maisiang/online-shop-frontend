@@ -3,8 +3,8 @@ const chat = require('../models/chat');
 
 // 讀取聊天室內容
 exports.getChat = async()=>{
-    // 按照日期新到舊，取得前50筆
-    return await chat.find().limit(50).sort({date:-1});
+    // 按照id新到舊，取得前50筆
+    return await chat.find().limit(50).sort({_id:-1});
 }
 
 // 新增聊天室內容

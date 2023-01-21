@@ -1,21 +1,18 @@
 <template>
-    <div>
-        <button @click="addToCart(item)">加入購物車</button>
-    </div>
+    <button @click="addToCart(item)">加入購物車</button>
 </template>
 
 <script>
-import axios from 'axios';
+import { apiCartAdd } from "@/assets/scripts/api";
 export default{
     props:['item'],
     methods:{
         // 新增商品到購物車
         addToCart(item){
-            axios.post('/api/cart/' + item._id)
-            .then((response)=>{
+            apiCartAdd(item._id).then((response)=>{
                 alert(item.name+"\n"+response.data.message);
             })
         }
-    }
+    },
 }
 </script>

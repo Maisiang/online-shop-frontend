@@ -1,8 +1,4 @@
-/*
-*{
-    font-family:微軟正黑體;  
-}
-*/
+
 
 ul{
     list-style: none;
@@ -11,20 +7,9 @@ ul{
 img{
 	max-width: 100%;
     max-height: 100%;
-    /*width: 100%;
-    height: 100%;*/
+
     width: auto;
     height: auto;
-}
-
-.h-full{
-    height: 100%;
-}
-.w-full{
-    width: 100%;
-}
-.h-auto{
-    height:auto;
 }
 
 /* 讓文字不會被反白 */
@@ -38,10 +23,22 @@ img{
                                     supported by Chrome, Edge, Opera and Firefox */
 }
 
-.c-red{
-    color: red;
+/* color */
+
+.bg-primary{
+    background-color: rgb(50, 150, 255);
+}
+.text-primary{
+    color: rgb(50, 150, 255);
+}
+.text-white {
+    color: white !important;
+}
+.text-red{
+    color: red !important;
 }
 
+/* 字體大小 */
 .h1 , h1{
     font-size: xx-large;
   }
@@ -55,61 +52,41 @@ img{
     font-size: small;
 }
 
-.row{
+
+/* flex */
+.flex-row{
     display: flex;
     flex-direction: row;
 }
-.col{
+.flex-col{
     display: flex;
     flex-direction: column;
 }
-.align-center{
-    align-items: center;
+.justify-content-start{
+    justify-content: flex-start;
 }
-.align-start{
+.justify-content-end{
+    justify-content: flex-end;
+}
+.justify-content-center{
+    justify-content: center;
+}
+.justify-content-between{
+    justify-content: space-between;
+}
+.justify-content-around{
+    justify-content: space-around;
+}
+.align-items-start{
     align-items: flex-start;
 }
-.align-end{
+.align-items-end{
     align-items: flex-end;
 }
-.justify-center{
-    justify-content: center;
-}
-.justify-space-around{
-    justify-content: space-around;
-}
-.justify-space-between{
-    justify-content: space-between;
-}
-.start-center{
-    justify-items: flex-start;
+.align-items-center{
     align-items: center;
 }
-.center-start{
-    justify-items: center;
-    align-items: flex-start;
-}
-.center-center{
-    justify-content: center;
-    align-items: center; 
-}
-.center-space-between{
-    justify-content: center;
-    align-items: space-between; 
-}
-.space-between-center{
-    justify-content: space-between;
-    align-items: center;  
-}
-  
-.space-around-center{
-    justify-content: space-around;
-    align-items: center;  
-}
-.space-around-start{
-    justify-content: space-around;
-    align-items: flex-start;
-}
+
 .flex-one{
     flex:1;
 }
@@ -118,6 +95,14 @@ img{
 }
 .flex-row-reverse{
     flex-direction: row-reverse;
+}
+
+/* Other */
+.h-full{
+    height: 100%;
+}
+.w-full{
+    width: 100%;
 }
 .cursor-ptr{
     cursor: pointer;
@@ -135,13 +120,6 @@ img{
     margin: 0 auto;
 }
 
-.m-t-l{
-    margin-top: 30px;
-}
-.m-r-l{
-    margin-right: 30px;
-}
-
 /* 商品、會員選單按鈕 */
 .active-menu-btn{
     background-color: rgba(50, 150, 255,.5);
@@ -150,4 +128,19 @@ img{
     background-color: #c7c7c7; /*d5d5d5*/
     font-weight: bold;
     cursor: pointer;
+}
+
+/* 表單按鈕 */
+.form-submit{
+    width: 50%;
+    height: 40px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+.form-submit:hover{
+    transition: 1s;
+    width: 100%;
+    background-color: rgb(50, 150, 255) !important;
+    border: 2px rgb(50, 150, 255) solid;
+    color:white;
 }

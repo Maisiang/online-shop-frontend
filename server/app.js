@@ -8,14 +8,17 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-// 解析 multipart/form-data
-let multer = require('multer');
-let upload = multer();
+// 配置multer - 解析 multipart/form-data
+/*
+const multer = require('multer');
+const upload = multer();
 app.use(upload.array());
+*/
 
-// express-ws 中間件 待刪除
-var expressWs = require('express-ws');
-expressWs(app);
+
+// 設置允許跨域請求
+var cors = require('cors');
+app.use(cors());
 
 // 配置session
 const session = require('express-session')
@@ -37,10 +40,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 所有路由
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter = require('./routes/api');
+var usersRouter = require('./routes/file');
 app.use('/api', indexRouter);
-app.use('/users', usersRouter);
+app.use('/file', usersRouter);
 
 // 連線到資料庫
 const mongodb = require('./db/mongodb');
@@ -63,5 +66,5 @@ app.use(function(err, req, res, next) {
 
 module.exports = {
   app,
-  sessionParser
+  sessionParser,
 };

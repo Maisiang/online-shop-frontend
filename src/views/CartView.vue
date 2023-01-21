@@ -1,20 +1,20 @@
 <template>
-  <div class="cart col center-center">
-    <ul class="cart-ul col center-center">
+  <div class="cart  flex-col">
+    <ul class="cart-list  flex-col  align-items-center">
       <h1 class="h1">購物車清單</h1>
       <p v-if="isCartEmpty" class="h2">購物車沒有任何商品...</p>
-      <li class="cart-list row space-between-center" v-for="(item,index) in productList" :key="index">
-        <img class="cart-delete" src="@/assets/images/delete.png" style="height:30px;" @click="deleteProduct(item)">
-        <div class="cart-img row center-center">
+      <li class="cart-list-item  flex-row  align-items-center" v-for="(item,index) in productList" :key="index">
+        <img class="cursor-ptr" src="@/assets/images/delete.png" style="height:30px;" @click="deleteProduct(item)">
+        <div class="cart-img  flex-row  justify-content-center  align-items-center">
           <img :src="require('@/assets/images/products/'+item.imgUrl)">
         </div>
-        <div class="cart-info col space-around-start">
+        <div class="cart-info  flex-col  justify-content-around">
           <p>{{item.name}}</p>
-          <p class="c-red">${{item.price}}</p>
+          <p class="text-red">${{item.price}}</p>
         </div>
-        <div class="cart-num row center-center">
+        <div class="cart-num  flex-row  justify-content-center">
           <button @click="changeProductNum(index,'-')">-</button>
-          <input type="text-align-center" :value="productList[index].num" v-on:input="inputProductNum($event.target.value,index)"
+          <input class="text-align-center" :value="productList[index].num" v-on:input="inputProductNum($event.target.value,index)"
           onkeyup="value=value.replace(/[^\d]/g,'') " maxlength="2">
           <button @click="changeProductNum(index,'+')">+</button>
         </div>
@@ -30,21 +30,20 @@
 
 <script>
 import OrderForm from "@/components/cart/OrderForm.vue";
-import axios from 'axios';
-
+import { apiCart, apiCartRemove } from "@/assets/scripts/api";
 export default {
   name: "CartView",
   data(){
     return{
-      productList:[],
-      total:0,
-      isCartEmpty:true
+      productList:[],   // 購物車商品列表
+      total:0,          // 總金額
+      isCartEmpty:true  // 當購物車為空
     }
   },
   methods:{
     // 取得用戶的購物車所有商品
     getCart(){
-      axios.get('/api/cart').then((response)=>{
+      apiCart().then((response)=>{
         // 將購物車內容複製到productList
         this.productList = response.data;
         // 購物車設定數量都為1個
@@ -62,8 +61,9 @@ export default {
         this.computeTotal();
       })
     },
+    // 移除用戶購物車商品
     deleteProduct(item){
-      axios.delete('/api/cart/' + item._id).then((response)=>{
+      apiCartRemove(item._id).then((response)=>{
           alert(response.data.message+"\n"+item.name);
           this.getCart();
       })
@@ -117,13 +117,15 @@ export default {
 </script>
 
 <style scoped>
-.cart-ul{
+.cart-list{
   padding: 10px;
   margin-top: 30px;
 }
-.cart-list{
+.cart-list-item{
+  width:100%;
   gap: 10px;
 }
+
 .cart-img{
   width:50%;
   height: 100px;
@@ -138,35 +140,18 @@ export default {
   width: 20%;
   height: 40px;
 }
-.cart-num input{
-  text-align: center;
-  width: 40px;
-}
-.cart-num button{
-  width: 25px;
-}
 .cart-num button,
 .cart-num input{
   box-sizing: border-box;
   height: 100%;
+  width: 30px;
 }
-.cart-delete{
-  width:auto;
-}
-.cart-delete:hover{
-  border-radius: 50%;
-  background-color: wheat;
-}
-
+/* 電腦 */
 @media (min-width:768px){
   .cart{
+    /* 購物車左、訂單右 */
     flex-direction: row;
     justify-content: space-around;
-    align-items: flex-start;
-    gap: 30px;
-  }
-  .cart-list{
-    width: 100%;
   }
   .cart-img{
     width:30%;

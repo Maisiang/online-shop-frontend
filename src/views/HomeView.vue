@@ -1,19 +1,18 @@
 <template>
   <div class="home noselect">
       <Swiper></Swiper>
-      <Category></Category>
+      <Intro></Intro>
   </div>
 </template>
 
 <script>
 import Swiper from '../components/home/Swiper.vue';
-import Category from '../components/home/Category.vue';
-
+import Intro from '../components/home/Intro.vue';
 export default {
   name: "HomeView",
   components:{
     Swiper,
-    Category,
+    Intro,
   },
 };
 </script>

@@ -1,12 +1,12 @@
 <template>
-    <div class="category">
-        <div class="category-text">
+    <div class="Intro">
+        <div class="Intro-text">
             <h1 class="h1">所有產品類別</h1>
-            <p>探索我們針對日常需求設計的高品質產品。</p>
-            <p>提供多樣的選擇，給顧客最值得信賴的服務。</p>
+            <p>探索我們為日常需求而設計的高科技產品！</p>
+            <p>提供多樣的選擇，給顧客最值得信賴的服務</p>
         </div>
-        <div v-for="(item,index) in categoryList" :key="index">
-            <div class="category-img-list">
+        <div v-for="item in categoryList">
+            <div class="Intro-img-list text-align-center">
                 <img :src="item.imgUrl">
                 <p>{{item.name}}</p>
             </div>
@@ -16,7 +16,6 @@
 
 <script scoped>
 export default{
-    name:'Category',
     data(){
         return{
             categoryList:[
@@ -33,34 +32,33 @@ export default{
 </script>
 
 <style>
-.category{
+.Intro{
     padding: 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 2fr 2fr 2fr;
 }
-.category-text{
+.Intro-text{
     grid-column: span 2;
     margin-bottom: 10px;
 }
 
-.category-img-list{
+.Intro-img-list{
     margin: 0 auto;
-    text-align: center;
     width: 70%;
     font-weight: bold;
     position: relative;
 }
-.category-img-list p{
+.Intro-img-list p{
     padding: 5px;
 }
 
-.category-img-list:hover{
+.Intro-img-list:hover{
     background-color: rgba(50, 150, 255,.5);
     transition: .3s .8s;
 }
-.category-img-list::before,
-.category-img-list::after{
+.Intro-img-list::before,
+.Intro-img-list::after{
     content:'';
     position: absolute;
     width: 0%;
@@ -68,38 +66,38 @@ export default{
     border: rgba(50, 150, 255,1) solid;
     transition: 1s;
 }
-.category-img-list::before{
+.Intro-img-list::before{
     top: 0px;
     left: 0px;
     border-width: 0px 0 0 0px;
 }
 
-.category-img-list::after{
+.Intro-img-list::after{
     bottom: 0px;
     right: 0px;
     border-width: 0px;
 }
 
-.category-img-list:hover::before,
-.category-img-list:hover::after{
+.Intro-img-list:hover::before,
+.Intro-img-list:hover::after{
     width: 98%;
     height: 98%;
 }
-.category-img-list:hover::before{
+.Intro-img-list:hover::before{
     border-width: 3px 0 0 3px;
 }
-.category-img-list:hover::after{
+.Intro-img-list:hover::after{
     border-width: 0 3px 3px 0;
 }
-
+/* 電腦 */
 @media (min-width:768px){
-    .category{
+    .Intro{
         display: grid;
         grid-template-columns: 2fr 1fr 1fr 1fr;
         grid-template-rows: 1fr 1fr;
         grid-gap: 10px;
     }
-    .category-text{
+    .Intro-text{
         grid-column: span 1;
         grid-row: span 2;
         text-align: start;

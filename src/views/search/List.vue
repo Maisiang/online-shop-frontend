@@ -2,22 +2,21 @@
   <div class="search-list">
       <Sort class="search-sort-bar" v-show="!showNotFound" v-on:getDataFromChild="getDataFromChild" :queryKey="queryKey"></Sort>
 
-      <div v-if="showNotFound" class="col center-center">
-          <h2 class="h2 m-t-l">沒有找到與  {{this.$route.query.key}} 相關的商品</h2>
-          <p class="m-t-l">請嘗試不同的關鍵字</p>
+      <div v-if="showNotFound" class="flex-col align-items-center search-alert">
+          <h2 class="h2">沒有找到與  {{this.$route.query.key}} 相關的商品</h2>
+          <p>請嘗試不同的關鍵字</p>
       </div>
 
 
-      <ul class="search-product-list row flex-wrap space-between-center">
-          <li class="col center-center" v-for="(item,index) in resObj" :key="index">
-              <div class="product-pic row center-center">
+      <ul class="search-product-list flex-row flex-wrap justify-content-between">
+          <li class="flex-col align-items-center" v-for="item in resObj">
+              <div class="product-pic flex-row justify-content-center align-items-center">
                   <img :src="require('@/assets/images/products/'+item.imgUrl)" />
               </div>
 
-              <div class="col space-between-center flex-one">
+              <div class="flex-col justify-content-between align-items-center flex-one">
                   <h3 class="h3">{{item.name}}</h3>
-
-                  <h3 class="h3 c-red">NT${{item.price}}</h3>
+                  <h3 class="h3 text-red">NT${{item.price}}</h3>
                   <AddToCartBtn v-bind:item="item"></AddToCartBtn>
               </div>
           </li>
@@ -54,22 +53,25 @@ export default {
 .search-product-list{
   width: 90%;
   margin: 0 auto;
+  gap: 50px 0;
 }
 .search-product-list li{
-  margin-bottom: 50px;
-  box-sizing: border-box;
   width: 45%;
-  height: 300px;
+  height: 280px;
 }
 .product-pic{
-  padding: 20px;
-  width:60%;
-  height: 150px;
+    padding: 20px;
+    width:60%;
+    height: 150px;
 }
 .search-sort-bar{
-    background-color: rgb(178, 214, 255);
+    background-color: rgb(180, 210, 255);
 }
-
+.search-alert{
+    padding-top:30px;
+    gap: 30px;
+}
+/* 電腦 */
 @media (min-width:768px){
   .search-product-list li{
       width: 26%;
