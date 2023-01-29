@@ -1,0 +1,146 @@
+
+
+ul{
+    list-style: none;
+}
+
+img{
+	max-width: 100%;
+    max-height: 100%;
+
+    width: auto;
+    height: auto;
+}
+
+/* 讓文字不會被反白 */
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+}
+
+/* color */
+
+.bg-primary{
+    background-color: rgb(50, 150, 255);
+}
+.text-primary{
+    color: rgb(50, 150, 255);
+}
+.text-white {
+    color: white !important;
+}
+.text-red{
+    color: red !important;
+}
+
+/* 字體大小 */
+.h1 , h1{
+    font-size: xx-large;
+  }
+.h2 , h2{
+    font-size: x-large;
+}
+.h3 ,h3{
+    font-size: medium;
+}
+.h4 , h4{
+    font-size: small;
+}
+
+
+/* flex */
+.flex-row{
+    display: flex;
+    flex-direction: row;
+}
+.flex-col{
+    display: flex;
+    flex-direction: column;
+}
+.justify-content-start{
+    justify-content: flex-start;
+}
+.justify-content-end{
+    justify-content: flex-end;
+}
+.justify-content-center{
+    justify-content: center;
+}
+.justify-content-between{
+    justify-content: space-between;
+}
+.justify-content-around{
+    justify-content: space-around;
+}
+.align-items-start{
+    align-items: flex-start;
+}
+.align-items-end{
+    align-items: flex-end;
+}
+.align-items-center{
+    align-items: center;
+}
+
+.flex-one{
+    flex:1;
+}
+.flex-wrap{
+    flex-wrap: wrap;
+}
+.flex-row-reverse{
+    flex-direction: row-reverse;
+}
+
+/* Other */
+.h-full{
+    height: 100%;
+}
+.w-full{
+    width: 100%;
+}
+.cursor-ptr{
+    cursor: pointer;
+}
+.c-ptr-hover:hover{
+    color: rgb(50, 150, 255);
+}
+.vertical-align-center{
+    vertical-align: center;
+}
+.text-align-center{
+    text-align: center;
+}
+.m-center{
+    margin: 0 auto;
+}
+
+/* 商品、會員選單按鈕 */
+.active-menu-btn{
+    background-color: rgba(50, 150, 255,.5);
+  }
+.not-active-menu-btn:hover{
+    background-color: #c7c7c7; /*d5d5d5*/
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* 表單按鈕 */
+.form-submit{
+    width: 50%;
+    height: 40px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+.form-submit:hover{
+    transition: 1s;
+    width: 100%;
+    background-color: rgb(50, 150, 255) !important;
+    border: 2px rgb(50, 150, 255) solid;
+    color:white;
+}
