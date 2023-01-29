@@ -1,33 +1,18 @@
 import axios from 'axios';
-axios.interceptors.response.use(
-    response => {
-        console.log('什麼鬼');
-        // 沒有登入 - 清空Session
-        if(response.data.isLogin===false &&
-           sessionStorage.getItem('user-info')){
-                sessionStorage.removeItem('user-info')
-        }
-        return response;
-    },
-    error => {
-        alert('Server目前不在...請稍後再試');
-        throw error;
-    }
-);
-
 
 // 建立各API的Axios實體
+const domain = 'http://itdove.ddns.net:3000'
 const productRequest = axios.create({
-    baseURL: '/api/product/'
+    baseURL: domain+'/api/product/'
 });
 const cartRequest = axios.create({
-    baseURL: '/api/cart/'
+    baseURL: domain+'/api/cart/'
 });
 const userRequest = axios.create({
-    baseURL: '/api/user/'
+    baseURL: domain+'/api/user/'
 });
 const transactionRequest = axios.create({
-    baseURL: '/api/transaction/'
+    baseURL: domain+'/api/transaction/'
 });
 
 // 商品
@@ -54,7 +39,7 @@ export const apiTransaction     = ()    => transactionRequest.get();
 export const apiTransactionAdd  = data    => transactionRequest.post('',data);
 
 
-// 攔截器判斷用戶是否登入
+// Response攔截器(判斷用戶是否登入)
 const addInterceptors = (instance)=>{
     instance.interceptors.response.use(
     response => {

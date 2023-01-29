@@ -197,6 +197,7 @@ export default{
             document.querySelector('.chat-board').style.height = (window.innerHeight - 140) + "px";
             console.log(window.innerHeight)
         }
+        this.isOnlineListActive();
 
     },
     updated(){

@@ -10,7 +10,7 @@
       </ul>
     </div>
 
-    <div class="m-center flex-col align-items-center">
+    <div class="product-content m-center flex-col align-items-center">
       <h1 class="h1 title">{{menuList.data[menuList.currentIndex].name}}</h1>
       <section class="products-list flex-row flex-wrap">
         <Sort v-show="!showNotFound" v-on:getDataFromChild="getDataFromChild" :queryKey="menuList.data[menuList.currentIndex].category" :key="menuList.currentIndex"></Sort>
@@ -44,11 +44,11 @@ export default {
         currentIndex: 0 ,
         data:[
           {name:'全部' , category:''},
-          {name:'滑鼠' , category:'滑鼠'},
-          {name:'鍵盤' , category:'鍵盤'},
-          {name:'耳機' , category:'耳機'},
-          {name:'喇叭' , category:'喇叭'},
-          {name:'筆電' , category:'筆電'},
+          {name:'滑鼠' , category:'mouse'},
+          {name:'鍵盤' , category:'keyboard'},
+          {name:'喇叭' , category:'speaker'},
+          {name:'筆電' , category:'laptop'},
+          {name:'耳機' , category:'earphone'},
         ]
       },
     }
@@ -87,6 +87,9 @@ export default {
   width:33%;
 }
 /* 產品列表 */
+.product-content{
+  width:100%;
+}
 .products-list{
   gap: 20px 1%;
 }
