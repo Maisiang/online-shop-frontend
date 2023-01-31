@@ -2,17 +2,22 @@ import axios from 'axios';
 
 // 建立各API的Axios實體
 const domain = 'http://itdove.ddns.net:3000'
+//const domain = 'https://itdove.onrender.com'
 const productRequest = axios.create({
-    baseURL: domain+'/api/product/'
+    baseURL: domain+'/api/product/',
+    withCredentials: true
 });
 const cartRequest = axios.create({
-    baseURL: domain+'/api/cart/'
+    baseURL: domain+'/api/cart/',
+    withCredentials: true
 });
 const userRequest = axios.create({
-    baseURL: domain+'/api/user/'
+    baseURL: domain+'/api/user/',
+    withCredentials: true
 });
 const transactionRequest = axios.create({
-    baseURL: domain+'/api/transaction/'
+    baseURL: domain+'/api/transaction/',
+    withCredentials: true
 });
 
 // 商品
