@@ -1,6 +1,7 @@
 <template>
     <div class="chat flex-row  justify-content-center  align-items-center">
         <div class="chat-content">
+
             <div class="chat-online-list flex-row">
                 <div class="w-full">
                     <p>目前在線：</p>
@@ -15,32 +16,37 @@
             </div>
 
             <div class="chat-board flex-col" id="chat-board">
+                <!-- 每則聊天訊息 -->
                 <div v-for="(item,index) in message" :key="index"
                 :class="username===item.username 
                         ? 'message flex-row reverse'
                         : 'message flex-row'">
 
-                    <!-- <img class="message-avatar" :src="require('@/assets/images/photo/'+item.avatar)"> -->
-                    <img class="message-avatar" :src="'http://itdove.ddns.net:3000/file/avatar/'+item.avatar">
+                    <!-- 用戶頭像 -->
+                    <img class="message-avatar" :src="item.avatar">
 
                     <div class="flex-col"
                         :class="username===item.username? 'align-items-end': 'align-items-start'">
-
+                        <!-- 用戶名 -->
                         <div class="message-username h4 flex-row"
                             :class="username===item.username? 'reverse': ''">
                             <p>{{ item.username }} </p>
                             <p v-if="item.isDate">{{ item.date }}</p>
                         </div>
-
+                        <!-- 訊息內容 -->
                         <div class="message-text flex-row flex-wrap h3 cursor-ptr" @click="activeDate(item)" v-if="item.hasURL===true">
-                            <div v-for="array in item.messageArray" class="test">
+                            <div v-for="array in item.messageArray">
+                                <!-- 如果是超連結 -->
                                 <a v-if="isUrl(array)" v-bind:href="array" target="_blank" style="color:white;">{{ array }}</a>
+                                <!-- 如果是空格 -->
                                 <div v-else-if="isSpace(array)" class="flex-row">
                                     <p v-for="char in array" >&nbsp;</p>
                                 </div>
+                                <!-- 其餘文字 -->
                                 <p v-else>{{ array }}</p>
                             </div>
                         </div>
+                        <!-- 沒有超連結的訊息直接顯示 -->
                         <p class="message-text h3 cursor-ptr" @click="activeDate(item)" v-if="item.hasURL===false">
                             {{item.message}}
                         </p>
@@ -48,7 +54,7 @@
                     </div>
                 </div>
             </div>
-
+            <!-- 送出訊息的按鈕 -->
             <form @submit.prevent="sendMessage" class="chat-form flex-row">
                 <input type="text" ref="sayInput" maxlength="300" placeholder="輸入訊息...">
                 <button>送出</button>
@@ -74,6 +80,7 @@ export default{
         }
     },
     methods:{
+        // 打開和關閉目前在線人數
         isOnlineListActive(){
             this.activeList = !this.activeList;
             if(this.activeList)
@@ -226,7 +233,9 @@ export default{
     gap: 0 10px;
 }
 .message-avatar{
-    height:30px;
+    box-sizing: border-box;
+    width:50px;
+    height:50px;
     border-radius: 50%;
     border: 2px rgb(50, 150, 255) solid;
     align-self: flex-end;
@@ -319,6 +328,10 @@ export default{
         bottom:5px;
         right:10px;
         left:15px;
+    }
+    .message-avatar{
+        width:35px;
+        height:35px;
     }
 }
 </style>

@@ -4,19 +4,19 @@ import axios from 'axios';
 const domain = 'http://itdove.ddns.net:3000'
 //const domain = 'https://itdove.onrender.com'
 const productRequest = axios.create({
-    baseURL: domain+'/api/product/',
+    baseURL: domain + '/api/product/',
     withCredentials: true
 });
 const cartRequest = axios.create({
-    baseURL: domain+'/api/cart/',
+    baseURL: domain + '/api/cart/',
     withCredentials: true
 });
 const userRequest = axios.create({
-    baseURL: domain+'/api/user/',
+    baseURL: domain + '/api/user/',
     withCredentials: true
 });
 const transactionRequest = axios.create({
-    baseURL: domain+'/api/transaction/',
+    baseURL: domain + '/api/transaction/',
     withCredentials: true
 });
 
@@ -52,7 +52,7 @@ const addInterceptors = (instance)=>{
         if(response.data.isLogin===false &&
             sessionStorage.getItem('user-info')){
                  sessionStorage.removeItem('user-info')
-         }
+        }
         return response;
     }, 
     error => {
