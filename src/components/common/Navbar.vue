@@ -4,7 +4,9 @@
         <li v-for="item in routerList" @click="switchTab(item.path)"
         class="cursor-ptr flex-row align-items-center "
         :class="$route.path.includes(item.path)?'selected':''">
-            <img :src="$route.path.includes(item.path)?item.selected:item.active">
+            <div class="navbar-img flex-row justify-content-end">
+                <img :src="$route.path.includes(item.path)?item.selected:item.active">
+            </div>
             <p class="h2">{{ item.title }}</p>
         </li>
     </ul>
@@ -60,6 +62,7 @@ export default{
     gap:10px 10px;
 }
 .navbar li{
+    box-sizing: border-box;
     padding: 10px;
     gap:0 10px;
 }
@@ -70,8 +73,7 @@ export default{
 .navbar li:hover{
     font-weight: bold;
 }
-.navbar li img{
-    width:30%;
+.navbar-img{
     display: none;
 }
 .selected{
@@ -80,14 +82,22 @@ export default{
 }
 /* 手機、平板 */
 @media (max-width:768px){
+
+    .navbar li{
+        width: 100%;
+    }
     .navbar li p{
         font-size: medium;
     }
-    .navbar li img{
+    .navbar-img{
+        width: 35%;
+        height: 40px;
         display: block;
     }
+
     .selected{
         border: none
     }
+
 }
 </style>

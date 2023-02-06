@@ -2,15 +2,12 @@
   <div class="user">
     <div class="user-menu  flex-col">
 
-      <div v-if="loading" class="user-avater  flex-row  justify-content-center  align-items-center">
+      <!-- 用戶頭像 -->
+      <div class="user-avater  flex-row  justify-content-center  align-items-center">
         <img :src="userInfo.avatar"/>
         <h1 class="h1">{{userInfo.username}}</h1>
       </div>
-      <div v-if="!loading" class="user-avater  flex-row  justify-content-center  align-items-center">
-        <img :src="require('@/assets/images/photo/unknown.jpg')"/>
-        <h1 class="h1">未登入</h1>
-      </div>
-
+      <!-- 用戶選單 -->
       <ul class="user-menu-list  flex-row  flex-wrap  justify-content-center">
         <li v-for="(item,index) in menuList.data" :key="index" @click="activeMenu(index)"
         class="noselect  flex-row  justify-content-center" 
@@ -19,7 +16,8 @@
         </li>
       </ul>
     </div>
-    <div class="user-content flex-col">
+  
+    <div class="user-content">
       <router-view v-bind:userInfo="userInfo"></router-view>
     </div>
 
@@ -54,7 +52,6 @@ export default{
         ]
       },
       userInfo:{},
-      loading:false,
     }
   },
   methods:{
@@ -81,11 +78,7 @@ export default{
     // 取得用戶資訊
     getUserInfo(){
       apiUserInfo().then((response)=>{
-        if(response.data.isLogin === true){
           this.userInfo = Object.assign({}, response.data);
-          /* 避免載入未知資源 */
-          this.loading = true;
-        }
       })
     }
   },
@@ -143,6 +136,5 @@ export default{
       margin-top: 35px;
       width: 65%;
     }
-
 }
 </style>

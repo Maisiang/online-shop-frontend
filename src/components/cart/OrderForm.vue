@@ -57,7 +57,8 @@ export default{
               productList:    this.productList,
             }).then((response)=>{
                 alert(response.data.message);
-                this.$router.replace({path: '/users/transaction'});
+                if(response.data.isSuccess)
+                  this.$router.replace({path: '/users/transaction'});
             })
         }
     }
@@ -77,15 +78,12 @@ export default{
   margin-top: 20px;
   gap: 10px 8%;
 }
-.order-form >input{
-  width: 100%;
-}
+
 .order-form div{
   width:45%;
 }
 .order-form div input{
   margin-top: 10px;
-  width: 100%;
 }
 .total{
   min-width: 100%;
@@ -94,6 +92,11 @@ export default{
   margin-top: 20px;
   margin-bottom: 20px;
 
+}
+input[type="text"],
+input[type="email"]{
+  height: 20px;
+  width: 100%;
 }
 .send-order-btn{
   border-color: rgb(255, 105, 105);

@@ -33,6 +33,8 @@ export default{
                 passwordList: this.passwordList
             }).then((response)=>{
                 alert(response.data.message);
+                if(response.data.isSuccess)
+                    location.reload();
             })
         }
     }
