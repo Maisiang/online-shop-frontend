@@ -104,8 +104,7 @@ export default{
         // 連接WebSocket
         connection(){
             //初始化WebSocket客戶端、註冊 'open' 事件
-            this.ws = new WebSocket('ws://itdove.ddns.net:3000');
-            //this.ws = new WebSocket('wss://itdove.onrender.com');
+            this.ws = new WebSocket('wss://itdove.onrender.com');
             this.ws.addEventListener('open', () => {});
 
             // 註冊 'message' 事件
