@@ -74,10 +74,6 @@ export default{
     font-weight: bold;
 }
 .navbar-img{
-    width: 35%;
-    height: 40px;
-}
-.navbar li img{
     display: none;
 }
 .selected{
@@ -93,11 +89,15 @@ export default{
     .navbar li p{
         font-size: medium;
     }
-    .navbar li img{
+    .navbar-img{
+        width: 35%;
+        height: 40px;
         display: block;
     }
+
     .selected{
         border: none
     }
+
 }
 </style>

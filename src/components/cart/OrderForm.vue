@@ -57,7 +57,8 @@ export default{
               productList:    this.productList,
             }).then((response)=>{
                 alert(response.data.message);
-                this.$router.replace({path: '/users/transaction'});
+                if(response.data.isSuccess)
+                  this.$router.replace({path: '/users/transaction'});
             })
         }
     }

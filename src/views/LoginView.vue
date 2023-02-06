@@ -61,14 +61,13 @@ export default{
         })
       },
       register(){
-        //console.log('請求註冊',formData.get('username'),formData.get('email'),formData.get('password'));
         let formData = new FormData(registerForm);
         apiUserRegister(
             formData
         ).then((response)=>{
             alert(response.data.message);
             if(response.data.isRegister)
-                this.$router.push('/')
+                location.reload();
         })
       },
       // 改變密碼欄位顯示星號還是文字

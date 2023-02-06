@@ -4,29 +4,26 @@ import HomeView from "../views/HomeView.vue";
 import { apiUserisLogin } from "@/assets/scripts/api";
 
 async function isLogin(from){
-  // 如果沒有session，需要跟Server請求 (可能新開個分頁而沒有)
-  if(!sessionStorage.getItem('user-info')){
-    await apiUserisLogin().then((response)=>{
-      // 確認為登入狀態
-      if(response.data.isLogin===true){
-        sessionStorage.setItem('user-info',JSON.stringify(response.data.userInfo));
+  await apiUserisLogin().then((response)=>{
+    if(response.data.isLogin===true){
+      sessionStorage.setItem('user-info',JSON.stringify(response.data.userInfo));
+      return true;
+    }
+    else{
+      // 清空Session
+      if(sessionStorage.getItem('user-info'))
+        sessionStorage.removeItem('user-info')
+      // 轉到登入頁面
+      if(from.path==='/login'){
+        alert('請先登入會員！');
+        // 使用replace避免循環重定向
+        router.replace('/login');
       }
-      // 未登入
-      else{
-        if(from.path==='/login'){
-          alert('請先登入會員！');
-          // 使用replace避免循環重定向
-          router.replace('/login');
-        }
-        else router.push('/login');
-        return false;
-      }
-    })
-  }
-  // 有session則進到路由頁面 (假設登入，如果Session未被清空則需要靠攔截器)
-  else{
-    return true
-  }
+      else 
+        router.push('/login');
+      return false;
+    }
+  })
 }
 
 const routes = [

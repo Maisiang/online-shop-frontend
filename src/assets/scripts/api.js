@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 // 建立各API的Axios實體
-const domain = 'http://itdove.ddns.net:3000'
-//const domain = 'https://itdove.onrender.com'
+const domain = 'https://itdove.onrender.com'
 const productRequest = axios.create({
     baseURL: domain + '/api/product/',
     withCredentials: true
@@ -44,15 +43,10 @@ export const apiTransaction     = ()    => transactionRequest.get();
 export const apiTransactionAdd  = data    => transactionRequest.post('',data);
 
 
-// Response攔截器(判斷用戶是否登入)
+// Response攔截器
 const addInterceptors = (instance)=>{
     instance.interceptors.response.use(
     response => {
-        // 沒有登入 - 清空Session
-        if(response.data.isLogin===false &&
-            sessionStorage.getItem('user-info')){
-                 sessionStorage.removeItem('user-info')
-        }
         return response;
     }, 
     error => {
