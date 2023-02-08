@@ -1,7 +1,8 @@
 import axios from 'axios';
+import store from '@/assets/scripts/store';
 
 // 建立各API的Axios實體
-const domain = 'https://itdove.onrender.com'
+const domain = 'https://itdove.onrender.com';
 const productRequest = axios.create({
     baseURL: domain + '/api/product/',
     withCredentials: true
@@ -40,13 +41,29 @@ export const apiUserisLogin = ()    => userRequest.get('/isLogin');
 
 // 交易
 export const apiTransaction     = ()    => transactionRequest.get();
-export const apiTransactionAdd  = data    => transactionRequest.post('',data);
+export const apiTransactionAdd  = data  => transactionRequest.post('',data);
 
-
+// Request攔截器
+const reqInterceptors = (instance)=>{
+    instance.interceptors.request.use(
+    config => {
+        store.commit('changeLoading', true);
+        return config;
+    }, 
+    error => {
+        throw error;
+    });
+}
+reqInterceptors(productRequest);
+reqInterceptors(cartRequest);
+reqInterceptors(userRequest);
+reqInterceptors(transactionRequest);
+  
 // Response攔截器
-const addInterceptors = (instance)=>{
+const resInterceptors = (instance)=>{
     instance.interceptors.response.use(
-    response => {
+    response => {   
+        store.commit('changeLoading', false);
         return response;
     }, 
     error => {
@@ -54,6 +71,8 @@ const addInterceptors = (instance)=>{
         throw error;
     });
 }
-addInterceptors(cartRequest);
-addInterceptors(userRequest);
-addInterceptors(transactionRequest);
+resInterceptors(productRequest);
+resInterceptors(cartRequest);
+resInterceptors(userRequest);
+resInterceptors(transactionRequest);
+
