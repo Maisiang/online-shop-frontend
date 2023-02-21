@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 
-import { apiUserisLogin } from "@/assets/scripts/api";
+import { apiUserLoginStatus } from "@/assets/scripts/api";
 
-async function isLogin(from){
-  await apiUserisLogin().then((response)=>{
+const isLogin = async(from) =>{
+  await apiUserLoginStatus().then((response)=>{
     if(response.data.isLogin===true){
       sessionStorage.setItem('user-info',JSON.stringify(response.data.userInfo));
       return true;
