@@ -4,7 +4,7 @@ import router from '@/router';
 
 // 建立各API的Axios實體
 const URL = 'https://itdove.onrender.com';
-//const URL = 'http://itdove.ddns.net:3000';
+//const URL = 'http://itdove.myvnc.com:3000';
 const productRequest = axios.create({
     baseURL: URL + '/api/product/',
     withCredentials: true
@@ -70,9 +70,11 @@ const resInterceptors = (instance)=>{
     }, 
     error => {
         store.commit('changeLoading', false);
-        if (error.response.status === 401){
-            alert('請先登入會員')
-            router.push('/login');
+        if(error.response != undefined){
+            if (error.response.status === 401){
+                alert('請先登入會員！')
+                router.push('/login');
+            }
         }
         else{
             alert('Server目前不在...請稍後再試');

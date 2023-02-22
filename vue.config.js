@@ -4,6 +4,6 @@ module.exports = defineConfig({
   lintOnSave:false,
   publicPath: process.env.NODE_ENV === 'production'? '/online-shop-frontend/': '/',
   devServer:{
-    host:'itdove.ddns.net',
+    host:'itdove.myvnc.com',
   }
 });
