@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkonline_shop_frontend"]=self["webpackChunkonline_shop_frontend"]||[]).push([[491],{2491:function(n,e,r){r.r(e),r.d(e,{default:function(){return i}});var t=r(3396);const o={class:"search h-full"};function s(n,e,r,s,u,c){const a=(0,t.up)("router-view");return(0,t.wg)(),(0,t.iD)("div",o,[(0,t.Wm)(a)])}var u={name:"SearchView"},c=r(89);const a=(0,c.Z)(u,[["render",s]]);var i=a}}]);
+//# sourceMappingURL=491.d47db123.js.map
